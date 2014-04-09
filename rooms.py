@@ -1,5 +1,6 @@
 import main
 
+
 def room1():
     possible_loot = True
     if main.monster_chance():
@@ -62,6 +63,8 @@ copper door down a [hallway] to your left."""
         else:
             print "\nChoose a door to continue."
             continue
+
+
 def room2():
     possible_loot = True
     if main.monster_chance():
@@ -78,8 +81,8 @@ CLANK momentarily disturbs the total silence."""
             if search == "yes":
                 if possible_loot:
                     if main.loot_chance():
-                        raw_input("You scour each mine cart, at last discovering some"
-                              " treasure!")
+                        raw_input("You scour each mine cart, at last discovering some "
+                                  "treasure!")
                         main.loot()
                         possible_loot = False
                         continue
@@ -120,6 +123,8 @@ There are three doors at the end of three tunnels ahead of you. One to the
         else:
             print "\nChoose a door to continue."
             continue
+
+
 def room3():
     possible_loot = True
     if main.monster_chance():
@@ -259,6 +264,8 @@ the other a soft [green]."""
         else:
             print "\nChoose a door to continue"
             continue
+
+
 def room4():
     if main.monster_chance():
         main.random_monster()
@@ -292,6 +299,7 @@ The way forward is marked by two doors.  One made of [steel] and one of
         else:
             print "\nChoose a door to continue."
             continue
+
 
 def final_room():
     raw_input('''
@@ -357,6 +365,7 @@ body... > ''')
             continue
         main.sorceror.boss_battle(main.player)
 
+
 # Function to enter the first room, begin function chain
 def start():
     main.player.name = raw_input('''
@@ -384,7 +393,7 @@ ye geared and on ye way.\" > """
 \"We're gonna get along great, %s!  Let me just grab ye some suitable arms
 and armor from the store room.\" > """ % main.player.name)
             raw_input("\nFenton returns with a well crafted bastard sword and set "
-                  "of full plate. >")
+                      "of full plate. >")
             main.player.mp = 0
             main.player.equipment.append(main.bastard_sword)
             main.player.equipment.append(main.plate)
@@ -438,6 +447,7 @@ Best o' luck to ye!\""""
             print "\nChoose a class to continue."
             continue
 
+
 def mine_entrance():
     raw_input("""
 You turn to leave the smithy.  The closing door behind you muffles the sound
@@ -452,6 +462,7 @@ recent inhabitants.
 \nA cold rain begins to drizzle. > """)
     raw_input("\nYou grit your teeth and begin the descent. > ")
     mine_start()
+
 
 def mine_start():
     if main.monster_chance:

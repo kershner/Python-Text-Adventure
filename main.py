@@ -1,8 +1,9 @@
 import random
 import rooms
 
+
 # Creating class for all the 'actors' in the game
-class Creature(object):
+class Player(object):
     def __init__(self, name, player_class, max_hp, hp, strength, ac, sta,
                  max_mana, mana, equipment, items, xp, back, used_item, weapon,
                  armor, combat):
@@ -24,6 +25,7 @@ class Creature(object):
         self.armor = armor
         self.combat = combat
     level = 1
+
     # Method to handle a single melee attack
     def melee_attack(self, enemy):
         attack = 2 + self.strength + int(self.sta * random.random())
@@ -34,6 +36,7 @@ class Creature(object):
             enemy.hp -= damage
         else:
             print "\n%s missed!" % self.name
+
     def spells(self, enemy):
         player.back = False
         while True:
@@ -63,6 +66,7 @@ class Creature(object):
                     print "\n%s casts Fireball! %s takes %d damage!" % \
                           (player.name, enemy.name, spell_damage)
                     break
+
     def inv(self):
         player.back = False
         while True:
@@ -87,19 +91,20 @@ class Creature(object):
                 else:
                     break
             elif choice == "use":
-                if player.combat == True:
+                if player.combat:
                     player.used_item = True
                     break
-                elif player.combat == False:
+                elif not player.combat:
                     self.use_item(spider)
                 elif choice == "back":
                     continue
                 else:
                     player.used_item = False
                     break
-            elif choice =="back":
+            elif choice == "back":
                 player.back = True
                 break
+
     def change_equipment(self):
         player.back = False
         while True:
@@ -109,7 +114,7 @@ class Creature(object):
                 break
             intchoice = int(choice)
             if player.weapon == self.equipment[intchoice].name or \
-                            player.armor == self.equipment[intchoice].name:
+                    player.armor == self.equipment[intchoice].name:
                 confirm = raw_input("Would you like to unequip the %s? >" %
                                     self.equipment[intchoice].name).lower()
                 if "yes" in confirm:
@@ -121,10 +126,11 @@ class Creature(object):
                 if "yes" in confirm:
                     self.equipment[intchoice].equip()
                     break
+
     def use_item(self, enemy):
         player.used_item = False
         player.back = False
-        while player.used_item == False:
+        while not player.used_item:
             try:
                 choice = raw_input("Select item by its number or [Back] > ").lower()
                 if choice == "back":
@@ -142,7 +148,7 @@ class Creature(object):
                         if self.hp > self.max_hp:
                             self.hp = self.max_hp
                         raw_input("\n%s uses the %s and regains %d HP!" %
-                                (self.name, itemchoice.name, itemchoice.plus_hp))
+                                  (self.name, itemchoice.name, itemchoice.plus_hp))
                         del self.items[intchoice]
                         player.used_item = True
                     elif itemchoice.plus_hp == 0 and itemchoice.damage == 0:
@@ -150,7 +156,7 @@ class Creature(object):
                         if self.mana > self.max_mana:
                             self.mana = self.max_mana
                         raw_input("\n%s uses the %s and regains %d MP!" %
-                                (self.name, itemchoice.name, itemchoice.plus_mana))
+                                  (self.name, itemchoice.name, itemchoice.plus_mana))
                         del self.items[intchoice]
                         player.used_item = True
                     elif itemchoice.plus_hp == 0 and itemchoice.plus_mana == 0:
@@ -158,13 +164,14 @@ class Creature(object):
                             raw_input("\nNothing to use %s on!" % itemchoice.name)
                         else:
                             raw_input("\n%s uses the %s on %s and deals %d damage!" %
-                                (self.name, itemchoice.name, enemy.name, itemchoice.damage))
+                                      (self.name, itemchoice.name, enemy.name, itemchoice.damage))
                             enemy.hp -= itemchoice.damage
                             del self.items[intchoice]
                             player.used_item = True
             except IndexError:
                 print '\nYou are not currently carrying that item!'
                 continue
+
     def status(self):
         player.back = False
         while True:
@@ -193,6 +200,7 @@ class Creature(object):
             if back in "back":
                 player.back = True
                 break
+
     def flee(self):
         while True:
             flee_chance = random.randint(1, 10)
@@ -203,6 +211,7 @@ class Creature(object):
             else:
                 raw_input("\nAs you turn to leave the monster blocks your exit!")
                 break
+
     def levelup(self):
         self.max_hp += 5
         self.strength += 2
@@ -212,8 +221,9 @@ class Creature(object):
         self.level += 1
         self.xp = 0
         raw_input("\n%s has gained a level!" % player.name)
+
     def rest(self):
-        hours = random.randint(2,6)
+        hours = random.randint(2, 6)
         mp_regained = hours * .5
         raw_input("""
 You spread the threadbare bedroll from your backpack on the ground before you.
@@ -241,7 +251,7 @@ Moments after you lay down, you begin to doze off. > """)
                     if self.mana > self.max_mana:
                         self.mana = self.max_mana
                     print "\n%s regains %d HP and %d MP!" % (player.name, hours,
-                                                           mp_regained)
+                                                             mp_regained)
             else:
                 if player.hp != player.max_hp:
                     player.hp += hours
@@ -249,28 +259,53 @@ Moments after you lay down, you begin to doze off. > """)
                         self.hp = self.max_hp
                     print "\n%s regains %d HP!" % (player.name, hours)
 
+
+class Monster(object):
+    def __init__(self, name, max_hp, hp, strength, ac, sta, weapon):
+        self.name = name
+        self.max_hp = max_hp
+        self.hp = hp
+        self.strength = strength
+        self.ac = ac
+        self.sta = sta
+        self.weapon = weapon
+
+    def melee_attack(self, enemy):
+        attack = 2 + self.strength + int(self.sta * random.random())
+        damage = int(random.random() * (self.sta / 2)) + self.strength
+        if attack >= enemy.ac:
+            print "\n%s strikes %s with their %s for %d damage!" % \
+                  (self.name, enemy.name, self.weapon, damage)
+            enemy.hp -= damage
+        else:
+            print "\n%s missed!" % self.name
+
+
 class Boss(object):
     def __init__(self, name, hp, ac, spells):
         self.name = name
         self.hp = hp
         self.ac = ac
         self.spells = spells
+
     def attack(self, player):
-        damage = random.randint(5,7)
-        if random.randint(1,10) > 4:
+        damage = random.randint(5, 7)
+        if random.randint(1, 10) > 4:
             player.hp -= damage
             raw_input("\n%s casts %s on %s for %d damage!" % (self.name,
-                        random.choice(self.spells), player.name, damage))
+                      random.choice(self.spells), player.name, damage))
         else:
             raw_input("\n%s's spell fizzles!" % self.name)
+
     def special_attack(self, player):
         damage = random.randint(8, 15)
-        if random.randint(1,10) > 4:
+        if random.randint(1, 10) > 4:
             player.hp -= damage
             raw_input('''
 %s's eyes glaze over as an unnatural maelstrom materializes within the
 chamber.  Bits of debris and intense winds tear at your body for %d damage. '''
-                  % (self.name, damage))
+                      % (self.name, damage))
+
     def transform(self):
         raw_input('''
 The figure suddenly springs into the air and hovers a short ways off the
@@ -278,12 +313,13 @@ ground. Spears of light begin to radiate from its body, eroding the
 surrounding skin and clothing.  You shield your eyes from an eruption of
 intense light and behold the transformed figure.  A hulking demon nearly
 thirty feet tall stands before you, covered in thick black fur and sporting
-huge talons each the size of a long spear. > ''' % self.name)
+huge talons each the size of a long spear. > ''')
         self.name = 'a hulking demon'
         self.hp = 25
         self.ac = 10
+
     def transform_attack(self, player):
-        damage = random.randint(8,12)
+        damage = random.randint(8, 12)
         if random.randint(1, 10) > 4:
             player.hp -= damage
             raw_input("""
@@ -291,6 +327,7 @@ huge talons each the size of a long spear. > ''' % self.name)
                       % (self.name, player.name, damage))
         else:
             raw_input("\n%s misses with their monstrous claws!" % self.name)
+
     def boss_battle(self, player):
         turn = 1
         player.combat = True
@@ -313,16 +350,16 @@ huge talons each the size of a long spear. > ''' % self.name)
                         break
                 elif choice == "inventory":
                     player.inv()
-                    if player.used_item == True:
+                    if player.used_item:
                         player.use_item(self)
-                        if player.used_item == False:
+                        if not player.used_item:
                             continue
-                        elif player.used_item == True:
+                        elif player.used_item:
                             break
                     elif player.back:
                         continue
                     else:
-                       break
+                        break
                 elif choice == "status":
                     player.status()
                     if player.back:
@@ -351,35 +388,41 @@ The %s is slain and the evil corruption plaguing the land has been destroyed.
 %s has been slain by %s!\n\n\n\n\nGame Over. > ''' % (player.name, self.name))
                 quit()
 
+
 class Weapon(object):
     def __init__(self, name, attack, ac_penalty):
         self.name = name
         self.attack = attack
         self.ac_penalty = ac_penalty
+
     def equip(self):
         player.strength += self.attack
         player.sta += (self.attack / 2)
         player.ac -= self.ac_penalty
         player.weapon = self.name
         print "\nYou have equipped the %s." % self.name
+
     def unequip(self):
         player.strength -= self.attack
         player.sta -= (self.attack / 2)
         player.ac += self.ac_penalty
         player.weapon = ""
         print "\nYou have unequipped the %s." % self.name
+
 
 class MagicWeapon(object):
     def __init__(self, name, attack, ac_penalty):
         self.name = name
         self.attack = attack
         self.ac_penalty = ac_penalty
+
     def equip(self):
         player.strength += self.attack
         player.sta += (self.attack / 2)
         player.ac -= self.ac_penalty
         player.weapon = self.name
         print "\nYou have equipped the %s." % self.name
+
     def unequip(self):
         player.strength -= self.attack
         player.sta -= (self.attack / 2)
@@ -387,18 +430,22 @@ class MagicWeapon(object):
         player.weapon = ""
         print "\nYou have unequipped the %s." % self.name
 
+
 class Armor(object):
     def __init__(self, name, defense):
         self.name = name
         self.defense = defense
+
     def equip(self):
         player.ac += self.defense
         player.armor = self.name
         print "\nYou have equipped the %s." % self.name
+
     def unequip(self):
         player.ac -= self.defense
-        player.weapon = ""
+        player.armor = ""
         print "\nYou have unequipped the %s." % self.name
+
 
 class Item(object):
     def __init__(self, name, plus_hp, plus_mana, damage):
@@ -406,6 +453,7 @@ class Item(object):
         self.plus_hp = plus_hp
         self.plus_mana = plus_mana
         self.damage = damage
+
 
 # Function to handle combat
 def combat(player, enemy):
@@ -428,16 +476,16 @@ def combat(player, enemy):
                     break
             elif choice == "inventory":
                 player.inv()
-                if player.used_item == True:
+                if player.used_item:
                     player.use_item(enemy)
-                    if player.used_item == False:
+                    if not player.used_item:
                         continue
-                    elif player.used_item == True:
+                    elif player.used_item:
                         break
                 elif player.back:
                     continue
                 else:
-                   break
+                    break
             elif choice == "status":
                 player.status()
                 if player.back:
@@ -464,7 +512,7 @@ def combat(player, enemy):
                     player.mana = player.max_mana
                 player.xp += xp_gained
                 print "%s gains %d MP and gains %d experience!" \
-                  % (player.name, player.mp_regained, xp_gained)
+                      % (player.name, player.mp_regained, xp_gained)
                 raw_input("")
             elif player.player_class == "mage" and player.hp == player.max_hp:
                 player.mana += mp_regained
@@ -493,6 +541,7 @@ def combat(player, enemy):
             print "\nGame Over."
             quit()
 
+
 # Randomly selects the next room from the list
 def room_selector():
     # When down to the final element of the list, go to final room
@@ -503,12 +552,15 @@ def room_selector():
         random_room.remove(i)
         i()
 
+
 # Randomly determine if a monster is present in a room or not
 def monster_chance():
-    if random.randint(1,10) > 5:
+    chance = random.randint(0, 100)
+    if chance > 55:
         return True
     else:
         return False
+
 
 # Randomly selects a monster from the list, starts combat
 def random_monster():
@@ -519,7 +571,7 @@ def random_monster():
         print "\nYou open the door quietly and can see %s patrolling the next room." % i.name
         choice = raw_input("Do you attempt to sneak past the creature? > ").lower()
         if choice == "yes":
-            stealth_chance = random.randint(1,100)
+            stealth_chance = random.randint(1, 100)
             if stealth_chance > 40:
                 raw_input("\nYou slip by %s unnoticed. > " % i.name)
             else:
@@ -535,6 +587,7 @@ def random_monster():
         raw_input("\nAs you open the door %s rushes toward you!" % i.name)
         combat(player, i)
 
+
 def monster_during_rest():
     i = random.choice(random_monsters)
     print """
@@ -542,12 +595,15 @@ You abrubtly wake from your slumber to the sound of %s rushing toward you!
 """ % i.name
     combat(player, i)
 
+
 def loot_chance():
-    chance = random.randint(1,100)
+    chance = random.randint(1, 100)
     if chance > 55:
         return True
     else:
         return False
+
+
 def loot():
     loot_type = random.randint(1, 100)
     if 16 < loot_type < 95:
@@ -586,13 +642,15 @@ healing_potion = Item("healing potion", 10, 0, 0)
 mana_potion = Item("mana potion", 0, 10, 0)
 frost_potion = Item("frost potion", 0, 0, 10)
 
-# Monsters - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana, MANA
-# equipment, items, xp, back, used_item, weapon, armor, combat
-orc = Creature("an orc", "", 15, 15, 2, 3, 7, 0, 0, [], [], 4, False, False, "dagger", "", "")
-goblin = Creature("a goblin", "", 15, 15, 2, 8, 8, 0, 0, [], [], 2, False, False, "bastard sword", "", "")
-kobold = Creature("a kobold", "", 15, 15, 3, 7, 8, 0, 0, [], [], 3, False, False, "mace", "", "")
-spider = Creature("a giant tarantula", "", 21, 21, 4, 6, 7, 0, 0, [], [], 3, False, False, "fangs", "", "")
-player = Creature("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 0, False, False, "", "", False)
+# Monsters - attributes are: Name, max HP, HP, strength, AC, sta, weapon
+orc = Monster("an orc", 15, 15, 2, 3, 7, 'mace')
+goblin = Monster("a goblin", 15, 15, 2, 8, 8, 'dagger')
+kobold = Monster("a kobold", 15, 15, 3, 7, 8, 'flail')
+spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 'fangs')
+# Player - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana, MANA
+#          equipment, items, xp, back, used_item, weapon, armor, combat
+player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 0, False, False, "", "", False)
+#Boss - attributes are: Name, HP, AC, spells
 sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball', 'meteor', 'ice strike'])
 
 # Lists of functions, objects for randomization
