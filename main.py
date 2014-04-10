@@ -5,8 +5,8 @@ import rooms
 # Creating class for all the 'actors' in the game
 class Player(object):
     def __init__(self, name, player_class, max_hp, hp, strength, ac, sta,
-                 max_mana, mana, equipment, items, xp, back, used_item, weapon,
-                 armor, combat):
+                 max_mana, mana, equipment, items, gold, xp, back, used_item, weapon,
+                 armor, combat, special):
         self.name = name
         self.player_class = player_class
         self.max_hp = max_hp
@@ -18,15 +18,16 @@ class Player(object):
         self.mana = mana
         self.equipment = equipment
         self.items = items
+        self.gold = gold
         self.xp = xp
         self.back = back
         self.used_item = used_item
         self.weapon = weapon
         self.armor = armor
         self.combat = combat
+        self.special = special
     level = 1
 
-    # Method to handle a single melee attack
     def melee_attack(self, enemy):
         attack = 2 + self.strength + int(self.sta * random.random())
         damage = int(random.random() * (self.sta / 2)) + self.strength
@@ -36,6 +37,57 @@ class Player(object):
             enemy.hp -= damage
         else:
             print "\n%s missed!" % self.name
+
+    def thievery(self, enemy):
+        player.back = False
+        while True:
+            choice = raw_input('\n[Steal] | [Backstab] | [Back] > ').lower()
+            if choice == 'back':
+                player.back = True
+                break
+            elif choice == 'steal':
+                if random.randint(0, 10) > 2:
+                    loot_type = random.randint(1, 100)
+                    if loot_type > 65:
+                        gold = random.randint(0, 15)
+                        player.gold += gold
+                        raw_input('\nYou successfully steal %d gold!' % gold)
+                        break
+                    elif 16 < loot_type < 65:
+                        i = random.choice(items)
+                        player.items.append(i)
+                        raw_input("\nYou successfully steal a %s!" % i.name)
+                        break
+                    elif 0 < loot_type < 15:
+                        i = random.choice(weapons)
+                        player.equipment.append(i)
+                        raw_input("\nYou successfully steal a %s!" % i.name)
+                        break
+                    else:
+                        i = random.choice(magic_weapons)
+                        player.equipment.append(i)
+                        raw_input("\nYou successfully steal a %s!" % i.name)
+                        break
+                else:
+                    raw_input('\nThe creature catches you rifling through its things!')
+                    break
+            elif choice == 'backstab':
+                if player.special < 1:
+                    raw_input('\nYou are too exhausted to attempt another backstab!')
+                else:
+                    raw_input('\nYou attempt to maneuver behind the creature...')
+                    attack = 5 + self.strength + int(self.sta * random.random())
+                    damage = int(random.random() * (self.sta / 2)) + self.strength + 10
+                    if attack >= enemy.ac:
+                        raw_input("\n%s backstabs %s with their %s for %d damage!" %
+                                 (self.name, enemy.name, self.weapon, damage))
+                        enemy.hp -= damage
+                        player.special -= 1
+                        break
+                    else:
+                        print "\n%s missed!" % self.name
+                        player.special -= 1
+                        break
 
     def spells(self, enemy):
         player.back = False
@@ -83,6 +135,7 @@ class Player(object):
                 else:
                     for i in self.items:
                         print self.items.index(i), i.name
+                print '\nGold: %d' % player.gold
             choice = raw_input("\n[Equip] | [Use] | [Back] >").lower()
             if choice == "equip":
                 self.change_equipment()
@@ -223,51 +276,56 @@ class Player(object):
         raw_input("\n%s has gained a level!" % player.name)
 
     def rest(self):
-        hours = random.randint(2, 6)
-        mp_regained = hours * .5
-        raw_input("""
+        confirm = raw_input('Are you sure you would like to rest? > ').lower()
+        if confirm == 'no':
+            player.back = True
+        else:
+            hours = random.randint(2, 6)
+            mp_regained = hours * .5
+            raw_input("""
 You spread the threadbare bedroll from your backpack on the ground before you.
 Moments after you lay down, you begin to doze off. > """)
-        if monster_chance():
-            monster_during_rest()
-        else:
-            print "\nYou awaken after %d hours feeling refreshed" % hours
-            if player.player_class == "mage":
-                if player.hp == player.max_hp and player.mana != player.max_mana:
-                    player.mana += mp_regained
-                    if self.mana > self.max_mana:
-                        self.mana = self.max_mana
-                    print "\n%s regains %d MP!" % (player.name, mp_regained)
-                elif player.hp != player.max_hp and player.mana == player.max_mana:
-                    player.hp += hours
-                    if self.hp > self.max_hp:
-                        self.hp = self.max_hp
-                    print "\n%s regains %d HP!" % (player.name, hours)
-                else:
-                    player.hp += hours
-                    player.mana += mp_regained
-                    if self.hp > self.max_hp:
-                        self.hp = self.max_hp
-                    if self.mana > self.max_mana:
-                        self.mana = self.max_mana
-                    print "\n%s regains %d HP and %d MP!" % (player.name, hours,
-                                                             mp_regained)
+            if monster_chance():
+                monster_during_rest()
             else:
-                if player.hp != player.max_hp:
-                    player.hp += hours
-                    if self.hp > self.max_hp:
-                        self.hp = self.max_hp
-                    print "\n%s regains %d HP!" % (player.name, hours)
+                raw_input("\nYou awaken after %d hours feeling refreshed" % hours)
+                if player.player_class == "mage":
+                    if player.hp == player.max_hp and player.mana != player.max_mana:
+                        player.mana += mp_regained
+                        if self.mana > self.max_mana:
+                            self.mana = self.max_mana
+                        print "\n%s regains %d MP!" % (player.name, mp_regained)
+                    elif player.hp != player.max_hp and player.mana == player.max_mana:
+                        player.hp += hours
+                        if self.hp > self.max_hp:
+                            self.hp = self.max_hp
+                        print "\n%s regains %d HP!" % (player.name, hours)
+                    else:
+                        player.hp += hours
+                        player.mana += mp_regained
+                        if self.hp > self.max_hp:
+                            self.hp = self.max_hp
+                        if self.mana > self.max_mana:
+                            self.mana = self.max_mana
+                        print "\n%s regains %d HP and %d MP!" % (player.name, hours,
+                                                                 mp_regained)
+                else:
+                    if player.hp != player.max_hp:
+                        player.hp += hours
+                        if self.hp > self.max_hp:
+                            self.hp = self.max_hp
+                        print "\n%s regains %d HP!" % (player.name, hours)
 
 
 class Monster(object):
-    def __init__(self, name, max_hp, hp, strength, ac, sta, weapon):
+    def __init__(self, name, max_hp, hp, strength, ac, sta, xp, weapon):
         self.name = name
         self.max_hp = max_hp
         self.hp = hp
         self.strength = strength
         self.ac = ac
         self.sta = sta
+        self.xp = xp
         self.weapon = weapon
 
     def melee_attack(self, enemy):
@@ -459,17 +517,29 @@ class Item(object):
 def combat(player, enemy):
     enemy.hp = enemy.max_hp
     player.combat = True
+    player.special = 2
     while True:
         print "\n%s\'s HP: %d" % (player.name, player.hp)
         print "%s\'s MP: %d" % (player.name, player.mana)
         while True:
             print "\n%s\'s HP: %d" % (enemy.name, enemy.hp)
-            choice = raw_input("\n[Attack] | [Spells] | [Inventory] | [Status] | [Flee] > ").lower()
+            if player.player_class == 'mage':
+                choice = raw_input("\n[Attack] | [Spells] | [Inventory] | [Status] | [Flee] > ").lower()
+            elif player.player_class == 'thief':
+                choice = raw_input("\n[Attack] | [Thievery] | [Inventory] | [Status] | [Flee] > ").lower()
+            else:
+                choice = raw_input("\n[Attack] | [Inventory] | [Status] | [Flee] > ").lower()
             if choice == "attack":
                 player.melee_attack(enemy)
                 break
             elif choice == "spells":
                 player.spells(enemy)
+                if player.back:
+                    continue
+                else:
+                    break
+            elif choice == 'thievery':
+                player.thievery(enemy)
                 if player.back:
                     continue
                 else:
@@ -538,7 +608,7 @@ def combat(player, enemy):
         # Player death
         if player.hp < 1:
             print "\n%s has vanquished %s!" % (enemy.name, player.name)
-            print "\nGame Over."
+            raw_input("\nGame Over.")
             quit()
 
 
@@ -555,8 +625,7 @@ def room_selector():
 
 # Randomly determine if a monster is present in a room or not
 def monster_chance():
-    chance = random.randint(0, 100)
-    if chance > 55:
+    if random.randint(0, 10) > 5:
         return True
     else:
         return False
@@ -590,9 +659,9 @@ def random_monster():
 
 def monster_during_rest():
     i = random.choice(random_monsters)
-    print """
+    raw_input("""
 You abrubtly wake from your slumber to the sound of %s rushing toward you!
-""" % i.name
+""" % i.name)
     combat(player, i)
 
 
@@ -642,14 +711,14 @@ healing_potion = Item("healing potion", 10, 0, 0)
 mana_potion = Item("mana potion", 0, 10, 0)
 frost_potion = Item("frost potion", 0, 0, 10)
 
-# Monsters - attributes are: Name, max HP, HP, strength, AC, sta, weapon
-orc = Monster("an orc", 15, 15, 2, 3, 7, 'mace')
-goblin = Monster("a goblin", 15, 15, 2, 8, 8, 'dagger')
-kobold = Monster("a kobold", 15, 15, 3, 7, 8, 'flail')
-spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 'fangs')
+# Monsters - attributes are: Name, max HP, HP, strength, AC, sta, XP, weapon
+orc = Monster("an orc", 15, 15, 2, 3, 7, 5, 'mace')
+goblin = Monster("a goblin", 15, 15, 2, 8, 8, 4, 'dagger')
+kobold = Monster("a kobold", 15, 15, 3, 7, 8, 5, 'flail')
+spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 6, 'fangs')
 # Player - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana, MANA
-#          equipment, items, xp, back, used_item, weapon, armor, combat
-player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 0, False, False, "", "", False)
+#          equipment, items, xp, gold, back, used_item, weapon, armor, combat, special
+player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 0, 0, False, False, "", "", False, 0)
 #Boss - attributes are: Name, HP, AC, spells
 sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball', 'meteor', 'ice strike'])
 

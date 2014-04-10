@@ -41,7 +41,10 @@ their clothing looks relatively intact."""
             main.player.status()
             continue
         elif choice == "rest":
+            main.player.back = False
             main.player.rest()
+            if main.player.back:
+                continue
         elif choice == "proceed":
             break
     print """
@@ -101,7 +104,10 @@ CLANK momentarily disturbs the total silence."""
             main.player.status()
             continue
         elif choice == "rest":
+            main.player.back = False
             main.player.rest()
+            if main.player.back:
+                continue
         elif choice == "proceed":
             break
     print """
@@ -169,7 +175,10 @@ seem to contain various items hidden within."""
             main.player.status()
             continue
         elif choice == "rest":
+            main.player.back = False
             main.player.rest()
+            if main.player.back:
+                continue
         elif choice == "proceed":
             break
     print"""
@@ -286,7 +295,10 @@ of value amongst them. """
             main.player.status()
             continue
         elif choice == "rest":
+            main.player.back = False
             main.player.rest()
+            if main.player.back:
+                continue
         elif choice == "proceed":
             break
     print '''
@@ -465,7 +477,7 @@ recent inhabitants.
 
 
 def mine_start():
-    if main.monster_chance:
+    if main.monster_chance():
         raw_input("""
 You carefully make your way down the rotting stairs to the mine's entrance.
 The distant scuttle of a frightened mouse sounds as you approach the pitch
