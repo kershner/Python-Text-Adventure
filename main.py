@@ -106,14 +106,16 @@ class Player(object):
                     self.mana -= 4
                     if self.hp > self.max_hp:
                         self.hp = self.max_hp
-                    print "%s casts Heal and regains 5 HP!" % player.name
+                    print "\n%s casts Heal and regains 5 HP!" % player.name
                     break
             elif choice == "fireball":
-                if player.mana < 7:
+                if not player.combat:
+                    raw_input("\nNothing to cast fireball on! > ")
+                elif player.mana < 7:
                     print "You do not have enough mana to cast Fireball!"
                 else:
                     self.mana -= 7
-                    spell_damage = random.randint(10, 12)
+                    spell_damage = random.randint(12, 15)
                     enemy.hp -= spell_damage
                     print "\n%s casts Fireball! %s takes %d damage!" % \
                           (player.name, enemy.name, spell_damage)
@@ -572,34 +574,23 @@ def combat(player, enemy):
             hp_regained = random.randint(1, 4)
             mp_regained = random.randint(1, 3)
             print "\n%s has vanquished %s!" % (player.name, enemy.name)
-            if player.hp == player.max_hp and player.mp == player.max_mana:
+            if player.player_class == 'mage':
                 player.xp += xp_gained
-                print "%s gains %d experience!" % (player.name, xp_gained)
-                raw_input("")
-            elif player.hp == player.max_hp and player.mp != player.max_mana:
+                player.hp += hp_regained
                 player.mana += mp_regained
+                if player.hp > player.max_hp:
+                    player.hp = player.max_hp
                 if player.mana > player.max_mana:
                     player.mana = player.max_mana
+                raw_input('%s regains %d HP, %d MP, and gains %d experience! > '
+                          % (player.name, hp_regained, mp_regained, xp_gained))
+            else:
                 player.xp += xp_gained
-                print "%s gains %d MP and gains %d experience!" \
-                      % (player.name, player.mp_regained, xp_gained)
-                raw_input("")
-            elif player.player_class == "mage" and player.hp == player.max_hp:
-                player.mana += mp_regained
-                if player.mana > player.max_mana:
-                    player.mana = player.max_mana
-                player.xp += xp_gained
-                print "%s regains %d MP and gains %d experience!" % \
-                      (player.name, mp_regained, xp_gained)
-                raw_input("")
-            elif player.hp != player.max_hp:
                 player.hp += hp_regained
                 if player.hp > player.max_hp:
                     player.hp = player.max_hp
-                player.xp += xp_gained
-                print "%s regains %d HP and gains %d experience!" % \
-                      (player.name, hp_regained, xp_gained)
-                raw_input("")
+                raw_input('%s regains %d HP and gains %d experience! > '
+                          % (player.name, hp_regained, xp_gained))
             if player.xp > 10:
                 player.levelup()
             break
@@ -712,9 +703,9 @@ mana_potion = Item("mana potion", 0, 10, 0)
 frost_potion = Item("frost potion", 0, 0, 10)
 
 # Monsters - attributes are: Name, max HP, HP, strength, AC, sta, XP, weapon
-orc = Monster("an orc", 15, 15, 2, 3, 7, 5, 'mace')
-goblin = Monster("a goblin", 15, 15, 2, 8, 8, 4, 'dagger')
-kobold = Monster("a kobold", 15, 15, 3, 7, 8, 5, 'flail')
+orc = Monster("an orc", 21, 15, 2, 3, 7, 5, 'mace')
+goblin = Monster("a goblin", 20, 15, 2, 8, 8, 4, 'dagger')
+kobold = Monster("a kobold", 19, 15, 3, 7, 8, 5, 'flail')
 spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 6, 'fangs')
 # Player - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana, MANA
 #          equipment, items, xp, gold, back, used_item, weapon, armor, combat, special
@@ -730,4 +721,4 @@ weapons = [bastard_sword, staff, dagger, spear, mace, two_hander, poleaxe]
 armor = [leather, plate, robes]
 magic_weapons = [magic_axe, magic_dagger]
 
-rooms.start()
+rooms.room3()

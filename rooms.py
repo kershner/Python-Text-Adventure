@@ -13,7 +13,10 @@ the stone walls."""
 You open the door to a room dimly lit by clumps of luminescent fungi growing
 in the cracks of the stone walls."""
     while True:
-        choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
         if choice == "search":
             print """
 You spot a pile of skeletal remains in the room's far corner.  As you approach
@@ -36,6 +39,9 @@ their clothing looks relatively intact."""
                     continue
         elif choice == "inventory":
             main.player.inv()
+            continue
+        elif choice == "spells":
+            main.player.spells(main.goblin)
             continue
         elif choice == "status":
             main.player.status()
@@ -77,7 +83,10 @@ You have entered a large open chamber.  Iron tracks lead down three separate
 tunnels, each blocked by a hastily constructed door.  A distant mechanical
 CLANK momentarily disturbs the total silence."""
     while True:
-        choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
         if choice == "search":
             print "\nYou see many orphaned mine carts along the tracks."
             search = raw_input("\nSearch the mine carts? > ").lower()
@@ -99,6 +108,9 @@ CLANK momentarily disturbs the total silence."""
                     continue
         elif choice == "inventory":
             main.player.inv()
+            continue
+        elif choice == "spells":
+            main.player.spells(main.goblin)
             continue
         elif choice == "status":
             main.player.status()
@@ -144,7 +156,10 @@ upwards to meet the ceiling.  The tree is seemingly giving off its own curious
 light, dimly illuminating the room.  On the other side of the great bowl are
 two stairways leading to two more doors."""
     while True:
-        choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
         if choice == "search":
             print """
 You notice several pillars lining the upper-level of the bowl.  Many of these
@@ -171,6 +186,9 @@ seem to contain various items hidden within."""
         elif choice == "inventory":
             main.player.inv()
             continue
+        elif choice == "spells":
+            main.player.spells(main.goblin)
+            continue
         elif choice == "status":
             main.player.status()
             continue
@@ -190,78 +208,91 @@ entire chamber and become a powerful roar of vibration."""
 In an instant the clamor dissipates, returning the chamber to utter silence.
 As you regain your composure you are addressed by a voice in the darkness."""
     raw_input('\n"Traveler...what purpose have you in this place?" > ')
-    choice1 = raw_input('''
+    while True:
+        choice1 = raw_input('''
 [Who] are you?"
 To [destroy] the evil within this mine."
 To [plunder] the mine's lost treasures." > ''').lower()
-    if choice1 == "who":
-        raw_input("""
+        if choice1 == "who":
+            raw_input("""
 As the words leave your mouth the ancient tree before you vibrates softly.
 Two large yellow eyes materialize in the bark and fix themselves upon
 you. > """)
-        print'''
+            print'''
 "I have no name, and your kind has no words for my being. My very existence is
 beyond anything in your experience - you can never fully understand my true
 essence.  Be content to perceive me as your kind often does, simply as a
 benevolent nature spirit."'''
-        choice2 = raw_input('''
+            while True:
+                choice2 = raw_input('''
 [What] do you want?"
 "You're a [talking] tree!" > ''').lower()
-        if choice2 == "what":
-            raw_input('''
+                if choice2 == "what":
+                    raw_input('''
 "My influence has been usurped by a nefarious  sorcerer seeking to enter the
 upper planes by way of my own deep connection with them.  It is this
 corruption that is responsible for the evil recently pouring forth from this
 mine. Find the sorcerer deeper in the mines and destroy him." > ''')
-            raw_input('''
+                    raw_input('''
 "If you refuse to help or fail in this task my connection with the planes will
 be severed and I will slowly wither into nonexistence.  The evil lurking in
 this region will gradually increase in ferocity and your civilization will be
 overrun.  However, the higher order of the universe is not concerned with such
 trivial matters, so your choice is ultimately meaningless.
 \nI leave you now." > ''')
-            raw_input("""
+                    raw_input("""
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > """)
-        elif choice2 == "talking":
-            raw_input('''
+                    break
+                elif choice2 == "talking":
+                    raw_input('''
 "Yes.  I can see your intellect is not evolved enough to truly comprehend my
 plight.  Our interaction will not be fruitful.  I leave you now to your
 simplistic awe." > ''')
-            raw_input("""
+                    raw_input("""
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > """)
-    elif choice1 == "destroy":
-        raw_input("""
+                    break
+                else:
+                    print "\nChoose an option to continue."
+                    continue
+        elif choice1 == "destroy":
+            raw_input("""
 As the words leave your mouth the ancient tree before you vibrates softly.
 Two large yellow eyes materialize in the bark and fix themselves upon you. > """)
-        raw_input('''
+            raw_input('''
 "You are near the end of that particular quest, traveler. I am known to your
 kind as a benevolent spirit.  My influence has been usurped by a nefarious
 sorcerer seeking to enter the upper planes by way of my own deep connection
 with them.  It is this corruption that is responsible for the evil recently
 pouring forth from this mine. Find the sorcerer deeper in the mines and
 destroy him." > ''')
-        raw_input('''
+            raw_input('''
 "If you refuse to help or fail in this task my connection with the planes will
 be severed and I will slowly wither into nonexistence.  The evil lurking in
 this region will gradually increase in ferocity and your civilization will be
 overrun.  However, the higher order of the universe is not concerned with such
 trivial matters so your choice is ultimately meaningless.
 I will leave you now." > ''')
-        raw_input("""
+            raw_input("""
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > """)
-    elif choice1 == "plunder":
-        raw_input("""
+            break
+        elif choice1 == "plunder":
+            raw_input("""
 As the words leave your mouth the ancient tree before you vibrates softly.
 Two large yellow eyes materialize in the bark and fix themselves upon you. > """)
-        raw_input('''
+            raw_input('''
 "Simple creature!  Concerned only with earthly wealth and materials!  You are
 no true champion.  Seek your plunder, mortal, your nonexistence draws near." > ''')
-        raw_input("""
+            raw_input("""
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > """)
+            break
+        else:
+            print '\nChoose an option to continue.'
+            continue
+        break
     print """
 Ahead of you lie two stone stairways winding up the sides of the bowl
 structure.  At their termination are two doors: one a dark [blue] color and
@@ -282,7 +313,10 @@ def room4():
 You find yourself in a dark and cluttered room.  The faint sound of dripping
 water echoes in the darkness."""
     while True:
-        choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
         if choice == "search":
             print """
 You can see mundane mining tools in various stages of disrepair throughout
@@ -290,6 +324,9 @@ this large room.  Despite your best efforts you are unable to find anything
 of value amongst them. """
         elif choice == "inventory":
             main.player.inv()
+            continue
+        elif choice == 'spells':
+            main.player.spells(main.goblin)
             continue
         elif choice == "status":
             main.player.status()
@@ -332,6 +369,27 @@ chamber.  The gloom is sharply broken by a few lone rays of sunlight pouring
 in from a crack in the chambers' ceiling.  The light partially illuminates a
 small island at the lake's center and a narrow bridge leading to it from the
 shore you now stand upon. > ''')
+    while True:
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+        if choice == "inventory":
+            main.player.inv()
+            continue
+        elif choice == 'spells':
+            main.player.spells(main.goblin)
+            continue
+        elif choice == "status":
+            main.player.status()
+            continue
+        elif choice == "rest":
+            main.player.back = False
+            main.player.rest()
+            if main.player.back:
+                continue
+        elif choice == "proceed":
+            break
     raw_input('''
 You see the silhouette of a figure standing at a pedestal on the island.  The
 figure's back is turned to you and the being is clearly preoccupied with some
@@ -436,8 +494,8 @@ a few healing potions. > ''')
 Best o' luck to ye!\""""
             mine_entrance()
         elif main.player.player_class == "mage":
-            main.player.max_mana = 20
-            main.player.mana = 20
+            main.player.max_mana = 35
+            main.player.mana = 35
             raw_input("""
 \"Fancy yerself one o' them fidgety wizards, eh %s? We ain't got much
 'round here fer yer type, but I'll see what I can find.\" > """ % main.player.name)
@@ -496,7 +554,10 @@ The distant scuttle of a frightened mouse sounds as you approach the pitch
 black opening.  You light a torch and extend your sight into the unknown dark
 a short ways.  You finally glimpse the door to the mine."""
     while True:
-        choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
         if choice == "search":
             print """
 You stand in a dilapidated mining quarry, abandoned by the local townsfolk
@@ -507,6 +568,9 @@ enter the mine."""
             continue
         elif choice == "inventory":
             main.player.inv()
+            continue
+        elif choice == 'spells':
+            main.player.spells(main.goblin)
             continue
         elif choice == "status":
             main.player.status()
