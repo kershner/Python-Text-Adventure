@@ -14,9 +14,11 @@ You open the door to a room dimly lit by clumps of luminescent fungi growing
 in the cracks of the stone walls."""
     while True:
         if main.player.player_class == 'mage':
-            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status]"
+                               " | [Rest] | [Proceed] > ").lower()
         else:
-            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest]"
+                               " | [Proceed] > ").lower()
         if choice == "search":
             print """
 You spot a pile of skeletal remains in the room's far corner.  As you approach
@@ -27,7 +29,7 @@ their clothing looks relatively intact."""
             if search == "yes":
                 if possible_loot:
                     if main.loot_chance():
-                        print "You sift through the remains and uncover some treasure!"
+                        raw_input("You sift through the remains and uncover some treasure!")
                         main.loot()
                         possible_loot = False
                         continue
@@ -64,6 +66,8 @@ copper door down a [hallway] to your left."""
                 raw_input("You successfully unlock the door!")
                 main.player.xp += 3
                 raw_input("\nYou gain 3 experience!")
+                if main.player.xp > 9:
+                    main.player.levelup()
                 main.room_selector()
             else:
                 raw_input("The door is locked!")
@@ -84,9 +88,11 @@ tunnels, each blocked by a hastily constructed door.  A distant mechanical
 CLANK momentarily disturbs the total silence."""
     while True:
         if main.player.player_class == 'mage':
-            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status]"
+                               " | [Rest] | [Proceed] > ").lower()
         else:
-            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest]"
+                               " | [Proceed] > ").lower()
         if choice == "search":
             print "\nYou see many orphaned mine carts along the tracks."
             search = raw_input("\nSearch the mine carts? > ").lower()
@@ -133,7 +139,9 @@ There are three doors at the end of three tunnels ahead of you. One to the
                 raw_input("You successfully unlock the door!")
                 main.player.xp += 3
                 raw_input("\nYou gain 3 experience!")
-                main.room_selector()
+                if main.player.xp > 9:
+                    main.player.levelup()
+                shop_room()
             else:
                 raw_input("The door is locked!")
         elif choice == "east" or choice == "south":
@@ -157,9 +165,11 @@ light, dimly illuminating the room.  On the other side of the great bowl are
 two stairways leading to two more doors."""
     while True:
         if main.player.player_class == 'mage':
-            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status]"
+                               " | [Rest] | [Proceed] > ").lower()
         else:
-            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest]"
+                               " | [Proceed] > ").lower()
         if choice == "search":
             print """
 You notice several pillars lining the upper-level of the bowl.  Many of these
@@ -238,8 +248,8 @@ mine. Find the sorcerer deeper in the mines and destroy him." > ''')
 be severed and I will slowly wither into nonexistence.  The evil lurking in
 this region will gradually increase in ferocity and your civilization will be
 overrun.  However, the higher order of the universe is not concerned with such
-trivial matters, so your choice is ultimately meaningless.
-\nI leave you now." > ''')
+trivial matters, so your choice is ultimately meaningless."
+\n"I leave you now." > ''')
                     raw_input("""
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > """)
@@ -272,8 +282,8 @@ destroy him." > ''')
 be severed and I will slowly wither into nonexistence.  The evil lurking in
 this region will gradually increase in ferocity and your civilization will be
 overrun.  However, the higher order of the universe is not concerned with such
-trivial matters so your choice is ultimately meaningless.
-I will leave you now." > ''')
+trivial matters so your choice is ultimately meaningless."
+"\nI will leave you now." > ''')
             raw_input("""
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > """)
@@ -314,9 +324,11 @@ You find yourself in a dark and cluttered room.  The faint sound of dripping
 water echoes in the darkness."""
     while True:
         if main.player.player_class == 'mage':
-            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status]"
+                               " | [Rest] | [Proceed] > ").lower()
         else:
-            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest]"
+                               " | [Proceed] > ").lower()
         if choice == "search":
             print """
 You can see mundane mining tools in various stages of disrepair throughout
@@ -420,6 +432,7 @@ def shop():
                           (main.weapons[int(choice)].attack,
                            main.weapons[int(choice)].ac_penalty)
                     print 'Price: %d gold' % main.weapons[int(choice)].price
+                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
                     while True:
                         confirm = raw_input('\n[Buy] | [Back] > ').lower()
                         if confirm == 'back':
@@ -446,6 +459,7 @@ def shop():
                     print '\n', main.armor[int(choice)].name.title()
                     print 'Defense: %d' % main.armor[int(choice)].defense
                     print 'Price: %d gold' % main.armor[int(choice)].price
+                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
                     while True:
                         confirm = raw_input('\n[Buy] | [Back] > ').lower()
                         if confirm == 'back':
@@ -474,6 +488,7 @@ def shop():
                           '\t', 'MP Bonus: %d' % main.items[int(choice)].plus_mana
                     print 'Damage: %d' % main.items[int(choice)].damage
                     print '\nPrice: %d gold' % main.items[int(choice)].price
+                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
                     while True:
                         confirm = raw_input('\n[Buy] | [Back] > ').lower()
                         if confirm == 'back':
@@ -502,6 +517,7 @@ def shop():
                           (main.magic_items[int(choice)].attack,
                            main.magic_items[int(choice)].ac_penalty)
                     print 'Price: %d gold' % main.magic_items[int(choice)].price
+                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
                     while True:
                         confirm = raw_input('\n[Buy] | [Back] > ').lower()
                         if confirm == 'back':
@@ -537,9 +553,11 @@ small island at the lake's center and a narrow bridge leading to it from the
 shore you now stand upon. > ''')
     while True:
         if main.player.player_class == 'mage':
-            choice = raw_input("\n[Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Inventory] | [Spells] | [Status] | [Rest]"
+                               " | [Proceed] > ").lower()
         else:
-            choice = raw_input("\n[Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Inventory] | [Status] | [Rest] | [Proceed]"
+                               " > ").lower()
         if choice == "inventory":
             main.player.inv()
             continue
@@ -619,7 +637,7 @@ the sticky green mess by wiping his hand on his trousers. > """)
 "My apologies.  Where were we? Ah yes - I'm told yer the one's been
 appointed to clear Grogg's Mine.  About time, ye ask me!  Naught but evil
 mischief comin' from that forsaken place these days.  In any case let's get
-ye geared and on ye way.\" > """
+ye geared and on ye way.\""""
     while True:
         main.player.player_class = raw_input("""
 "Tell me, d'ye figure yerself more of a [fighter], [thief], or one of them
@@ -720,9 +738,11 @@ black opening.  You light a torch and extend your sight into the unknown dark
 a short ways.  You finally glimpse the door to the mine."""
     while True:
         if main.player.player_class == 'mage':
-            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Spells] | [Status]"
+                               " | [Rest] | [Proceed] > ").lower()
         else:
-            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest] | [Proceed] > ").lower()
+            choice = raw_input("\n[Search] | [Inventory] | [Status] | [Rest]"
+                               " | [Proceed] > ").lower()
         if choice == "search":
             print """
 You stand in a dilapidated mining quarry, abandoned by the local townsfolk
