@@ -5,8 +5,8 @@ import rooms
 # Creating class for all the 'actors' in the game
 class Player(object):
     def __init__(self, name, player_class, max_hp, hp, strength, ac, sta,
-                 max_mana, mana, equipment, items, gold, xp, back, used_item, weapon,
-                 armor, combat, special):
+                 max_mana, mana, equipment, items, gold, xp, back, used_item,
+                 weapon, armor, combat, special):
         self.name = name
         self.player_class = player_class
         self.max_hp = max_hp
@@ -28,12 +28,29 @@ class Player(object):
         self.special = special
     level = 1
 
+    def attack(self, enemy):
+        player.back = False
+        while True:
+            print '\n[Weapon] | [Gut] punch | [Back]'
+            choice = raw_input('Select Attack > ').lower()
+            if choice == 'back':
+                player.back = True
+                break
+            elif choice == 'weapon':
+                self.melee_attack(enemy)
+                break
+            elif choice == 'gut':
+                enemy.stunned = 1
+                raw_input('\n%s punches %s in the stomach! %s doubles over in'
+                          ' pain.' % (self.name, enemy.name, enemy.name))
+                break
+
     def melee_attack(self, enemy):
         attack = 2 + self.strength + int(self.sta * random.random())
         damage = int(random.random() * (self.sta / 2)) + self.strength
         if attack >= enemy.ac:
-            print "\n%s strikes %s with their %s for %d damage!" % \
-                  (self.name, enemy.name, self.weapon, damage)
+            raw_input("\n%s strikes %s with their %s for %d damage!" %
+                     (self.name, enemy.name, self.weapon, damage))
             enemy.hp -= damage
         else:
             print "\n%s missed!" % self.name
@@ -64,7 +81,7 @@ class Player(object):
                         raw_input("\nYou successfully steal a %s!" % i.name)
                         break
                     else:
-                        i = random.choice(magic_weapons)
+                        i = random.choice(magic_items)
                         player.equipment.append(i)
                         raw_input("\nYou successfully steal a %s!" % i.name)
                         break
@@ -92,9 +109,9 @@ class Player(object):
     def spells(self, enemy):
         player.back = False
         while True:
-            print "\n[Heal | 4 MP] | [Fireball | 7 MP] | [Back] > "
+            print "\n[Heal | 4 MP] | [Fireball | 7 MP] | [Stun | 10 MP] | [Back] > "
             print " MP: %d" % player.mana
-            choice = raw_input("\nSelect Spell >").lower()
+            choice = raw_input("\nSelect Spell > ").lower()
             if choice == "back":
                 player.back = True
                 break
@@ -110,7 +127,7 @@ class Player(object):
                     break
             elif choice == "fireball":
                 if not player.combat:
-                    raw_input("\nNothing to cast fireball on! > ")
+                    raw_input("\nNothing to cast Fireball on! > ")
                 elif player.mana < 7:
                     print "You do not have enough mana to cast Fireball!"
                 else:
@@ -120,11 +137,22 @@ class Player(object):
                     print "\n%s casts Fireball! %s takes %d damage!" % \
                           (player.name, enemy.name, spell_damage)
                     break
+            elif choice == "stun":
+                if not player.combat:
+                    raw_input('\nNothing to cast Stun on! > ')
+                elif player.mana < 5:
+                    print "You do not have enough mana to cast Stun!"
+                else:
+                    self.mana -= 10
+                    enemy.stunned = 2
+                    raw_input('\n%s casts Stun! %s\'s eyes glaze over...' %
+                             (self.name, enemy.name))
+                    break
 
     def inv(self):
         player.back = False
         while True:
-            if len(self.equipment) < 1 and len(self.items) < 1:
+            if len(self.equipment) < 1 and len(self.items) < 1 and self.gold < 1:
                 print "\nYou are not currently carrying anything."
             else:
                 print "\nYou are currently carrying:"
@@ -138,7 +166,7 @@ class Player(object):
                     for i in self.items:
                         print self.items.index(i), i.name
                 print '\nGold: %d' % player.gold
-            choice = raw_input("\n[Equip] | [Use] | [Back] >").lower()
+            choice = raw_input("\n[Equip] | [Use] | [Back] > ").lower()
             if choice == "equip":
                 self.change_equipment()
                 if player.back:
@@ -163,20 +191,20 @@ class Player(object):
     def change_equipment(self):
         player.back = False
         while True:
-            choice = raw_input("\nSelect item with its number or [Back] >").lower()
+            choice = raw_input("\nSelect item with its number or [Back] > ").lower()
             if choice == "back":
                 player.back = True
                 break
             intchoice = int(choice)
             if player.weapon == self.equipment[intchoice].name or \
                     player.armor == self.equipment[intchoice].name:
-                confirm = raw_input("Would you like to unequip the %s? >" %
+                confirm = raw_input("Would you like to unequip the %s? > " %
                                     self.equipment[intchoice].name).lower()
                 if "yes" in confirm:
                     self.equipment[intchoice].unequip()
                     break
             else:
-                confirm = raw_input("Would you like to equip the %s? >" %
+                confirm = raw_input("Would you like to equip the %s? > " %
                                     self.equipment[intchoice].name).lower()
                 if "yes" in confirm:
                     self.equipment[intchoice].equip()
@@ -193,7 +221,7 @@ class Player(object):
                     break
                 intchoice = int(choice)
                 itemchoice = self.items[intchoice]
-                confirm = raw_input("Would you like to use the %s? >" %
+                confirm = raw_input("Would you like to use the %s? > " %
                                     self.items[intchoice].name).lower()
                 if "yes" in confirm:
                     # These if statements are figuring out if the item chosen
@@ -203,7 +231,8 @@ class Player(object):
                         if self.hp > self.max_hp:
                             self.hp = self.max_hp
                         raw_input("\n%s uses the %s and regains %d HP!" %
-                                  (self.name, itemchoice.name, itemchoice.plus_hp))
+                                  (self.name, itemchoice.name,
+                                   itemchoice.plus_hp))
                         del self.items[intchoice]
                         player.used_item = True
                     elif itemchoice.plus_hp == 0 and itemchoice.damage == 0:
@@ -211,7 +240,8 @@ class Player(object):
                         if self.mana > self.max_mana:
                             self.mana = self.max_mana
                         raw_input("\n%s uses the %s and regains %d MP!" %
-                                  (self.name, itemchoice.name, itemchoice.plus_mana))
+                                  (self.name, itemchoice.name,
+                                   itemchoice.plus_mana))
                         del self.items[intchoice]
                         player.used_item = True
                     elif itemchoice.plus_hp == 0 and itemchoice.plus_mana == 0:
@@ -219,7 +249,8 @@ class Player(object):
                             raw_input("\nNothing to use %s on!" % itemchoice.name)
                         else:
                             raw_input("\n%s uses the %s on %s and deals %d damage!" %
-                                      (self.name, itemchoice.name, enemy.name, itemchoice.damage))
+                                      (self.name, itemchoice.name, enemy.name,
+                                       itemchoice.damage))
                             enemy.hp -= itemchoice.damage
                             del self.items[intchoice]
                             player.used_item = True
@@ -249,9 +280,9 @@ class Player(object):
             else:
                 for i in player.items:
                     print i.name
-            print "\nXP to next level: %d" % (10 - player.xp)
             print "Level %d %s" % (player.level, player.player_class)
-            back = raw_input("\n[Back] >")
+            print "\nXP to next level: %d" % (10 - player.xp)
+            back = raw_input("\n[Back] > ")
             if back in "back":
                 player.back = True
                 break
@@ -261,10 +292,12 @@ class Player(object):
             flee_chance = random.randint(1, 10)
             if flee_chance > 4:
                 raw_input("\nYou scramble through the door behind you and flee! > ")
-                raw_input("\nYou find yourself in an unfamiliar room with one untried door. > ")
+                raw_input("\nYou find yourself in an unfamiliar room with one "
+                          "untried door. > ")
                 room_selector()
             else:
-                raw_input("\nAs you turn to leave the monster blocks your exit!")
+                raw_input("\nAs you turn to leave the monster blocks your "
+                          "exit!")
                 break
 
     def levelup(self):
@@ -320,7 +353,7 @@ Moments after you lay down, you begin to doze off. > """)
 
 
 class Monster(object):
-    def __init__(self, name, max_hp, hp, strength, ac, sta, xp, weapon):
+    def __init__(self, name, max_hp, hp, strength, ac, sta, xp, weapon, stunned):
         self.name = name
         self.max_hp = max_hp
         self.hp = hp
@@ -329,6 +362,7 @@ class Monster(object):
         self.sta = sta
         self.xp = xp
         self.weapon = weapon
+        self.stunned = stunned
 
     def melee_attack(self, enemy):
         attack = 2 + self.strength + int(self.sta * random.random())
@@ -450,10 +484,11 @@ The %s is slain and the evil corruption plaguing the land has been destroyed.
 
 
 class Weapon(object):
-    def __init__(self, name, attack, ac_penalty):
+    def __init__(self, name, attack, ac_penalty, price):
         self.name = name
         self.attack = attack
         self.ac_penalty = ac_penalty
+        self.price = price
 
     def equip(self):
         player.strength += self.attack
@@ -471,10 +506,11 @@ class Weapon(object):
 
 
 class MagicWeapon(object):
-    def __init__(self, name, attack, ac_penalty):
+    def __init__(self, name, attack, ac_penalty, price):
         self.name = name
         self.attack = attack
         self.ac_penalty = ac_penalty
+        self.price = price
 
     def equip(self):
         player.strength += self.attack
@@ -492,9 +528,10 @@ class MagicWeapon(object):
 
 
 class Armor(object):
-    def __init__(self, name, defense):
+    def __init__(self, name, defense, price):
         self.name = name
         self.defense = defense
+        self.price = price
 
     def equip(self):
         player.ac += self.defense
@@ -508,11 +545,12 @@ class Armor(object):
 
 
 class Item(object):
-    def __init__(self, name, plus_hp, plus_mana, damage):
+    def __init__(self, name, plus_hp, plus_mana, damage, price):
         self.name = name
         self.plus_hp = plus_hp
         self.plus_mana = plus_mana
         self.damage = damage
+        self.price = price
 
 
 # Function to handle combat
@@ -521,86 +559,105 @@ def combat(player, enemy):
     player.combat = True
     player.special = 2
     while True:
-        print "\n%s\'s HP: %d" % (player.name, player.hp)
-        print "%s\'s MP: %d" % (player.name, player.mana)
-        while True:
-            print "\n%s\'s HP: %d" % (enemy.name, enemy.hp)
-            if player.player_class == 'mage':
-                choice = raw_input("\n[Attack] | [Spells] | [Inventory] | [Status] | [Flee] > ").lower()
-            elif player.player_class == 'thief':
-                choice = raw_input("\n[Attack] | [Thievery] | [Inventory] | [Status] | [Flee] > ").lower()
-            else:
-                choice = raw_input("\n[Attack] | [Inventory] | [Status] | [Flee] > ").lower()
-            if choice == "attack":
-                player.melee_attack(enemy)
-                break
-            elif choice == "spells":
-                player.spells(enemy)
-                if player.back:
-                    continue
-                else:
-                    break
-            elif choice == 'thievery':
-                player.thievery(enemy)
-                if player.back:
-                    continue
-                else:
-                    break
-            elif choice == "inventory":
-                player.inv()
-                if player.used_item:
-                    player.use_item(enemy)
-                    if not player.used_item:
-                        continue
-                    elif player.used_item:
-                        break
-                elif player.back:
-                    continue
-                else:
-                    break
-            elif choice == "status":
-                player.status()
-                if player.back:
-                    continue
-                else:
-                    break
-            elif choice == "flee":
-                player.flee()
-                break
-        # Victory conditions!
+        combat_choice(player, enemy)
         if enemy.hp < 1:
-            player.combat = False
-            xp_gained = enemy.xp
-            hp_regained = random.randint(1, 4)
-            mp_regained = random.randint(1, 3)
-            print "\n%s has vanquished %s!" % (player.name, enemy.name)
-            if player.player_class == 'mage':
-                player.xp += xp_gained
-                player.hp += hp_regained
-                player.mana += mp_regained
-                if player.hp > player.max_hp:
-                    player.hp = player.max_hp
-                if player.mana > player.max_mana:
-                    player.mana = player.max_mana
-                raw_input('%s regains %d HP, %d MP, and gains %d experience! > '
-                          % (player.name, hp_regained, mp_regained, xp_gained))
-            else:
-                player.xp += xp_gained
-                player.hp += hp_regained
-                if player.hp > player.max_hp:
-                    player.hp = player.max_hp
-                raw_input('%s regains %d HP and gains %d experience! > '
-                          % (player.name, hp_regained, xp_gained))
-            if player.xp > 10:
-                player.levelup()
+            victory(player, enemy)
             break
-        raw_input("\n%s readies their attack... >" % enemy.name)
-        enemy.melee_attack(player)
+        if enemy.stunned > 0:
+            raw_input('\n%s is stunned!' % enemy.name)
+            enemy.stunned -= 1
+        else:
+            raw_input("\n%s readies their attack... > " % enemy.name)
+            enemy.melee_attack(player)
         # Player death
         if player.hp < 1:
             print "\n%s has vanquished %s!" % (enemy.name, player.name)
             raw_input("\nGame Over.")
             quit()
+
+
+def combat_choice(player, enemy):
+    print "\n%s\'s HP: %d" % (player.name, player.hp)
+    print "%s\'s MP: %d" % (player.name, player.mana)
+    while True:
+        print "\n%s\'s HP: %d" % (enemy.name, enemy.hp)
+        if player.player_class == 'mage':
+            choice = raw_input("\n[Attack] | [Spells] | [Inventory] | [Status] | [Flee] > ").lower()
+        elif player.player_class == 'thief':
+            choice = raw_input("\n[Attack] | [Thievery] | [Inventory] | [Status] | [Flee] > ").lower()
+        else:
+            choice = raw_input("\n[Attack] | [Inventory] | [Status] | [Flee] > ").lower()
+        if choice == "attack":
+            if player.player_class == 'fighter':
+                player.attack(enemy)
+                if player.back:
+                    continue
+            else:
+                player.melee_attack(enemy)
+            break
+        elif choice == "spells":
+            player.spells(enemy)
+            if player.back:
+                continue
+            else:
+                break
+        elif choice == 'thievery':
+            player.thievery(enemy)
+            if player.back:
+                continue
+            else:
+                break
+        elif choice == "inventory":
+            player.inv()
+            if player.used_item:
+                player.use_item(enemy)
+                if not player.used_item:
+                    continue
+                elif player.used_item:
+                    break
+            elif player.back:
+                continue
+            else:
+                break
+        elif choice == "status":
+            player.status()
+            if player.back:
+                continue
+            else:
+                break
+        elif choice == "flee":
+            player.flee()
+            break
+
+# Victory conditions!
+def victory(player, enemy):
+    player.combat = False
+    xp_gained = enemy.xp
+    hp_regained = random.randint(1, 4)
+    mp_regained = random.randint(1, 3)
+    print "\n%s has vanquished %s!" % (player.name, enemy.name)
+    gold_gained = random.randint(1, 10)
+    player.gold += gold_gained
+    if player.player_class == 'mage':
+        player.xp += xp_gained
+        player.hp += hp_regained
+        player.mana += mp_regained
+        if player.hp > player.max_hp:
+            player.hp = player.max_hp
+        if player.mana > player.max_mana:
+            player.mana = player.max_mana
+        raw_input('%s regains %d HP, %d MP, gains %d gold, and gains %d '
+                  'experience! > ' % (player.name, hp_regained, mp_regained,
+                                      gold_gained, xp_gained))
+    else:
+        player.xp += xp_gained
+        player.hp += hp_regained
+        if player.hp > player.max_hp:
+            player.hp = player.max_hp
+        raw_input('%s regains %d HP, gains %d gold, and gains %d experience! > '
+                  ' ' % (player.name, hp_regained, gold_gained, xp_gained))
+    if player.xp > 10:
+        player.levelup()
 
 
 # Randomly selects the next room from the list
@@ -616,7 +673,7 @@ def room_selector():
 
 # Randomly determine if a monster is present in a room or not
 def monster_chance():
-    if random.randint(0, 10) > 5:
+    if random.randint(0, 10) > 3:
         return True
     else:
         return False
@@ -675,41 +732,41 @@ def loot():
         player.equipment.append(i)
         raw_input("\nYou find a %s!" % i.name)
     else:
-        i = random.choice(magic_weapons)
+        i = random.choice(magic_items)
         player.equipment.append(i)
         raw_input("\nYou find a %s!" % i.name)
 
 # Weapons - attributes are name, attack, and AC penalty
-bastard_sword = Weapon("bastard sword", 4, 1)
-staff = Weapon("gnarled staff", 2, 0)
-dagger = Weapon("dagger", 1, 0)
-spear = Weapon("spear", 3, 1)
-mace = Weapon("mace", 3, 0)
-two_hander = Weapon("two handed sword", 5, 2)
-poleaxe = Weapon("poleaxe", 6, 3)
+bastard_sword = Weapon("bastard sword", 4, 1, 20)
+staff = Weapon("gnarled staff", 2, 0, 15)
+dagger = Weapon("dagger", 1, 0, 8)
+spear = Weapon("spear", 3, 1, 16)
+mace = Weapon("mace", 3, 0, 12)
+two_hander = Weapon("two handed sword", 5, 2, 25)
+poleaxe = Weapon("poleaxe", 6, 3, 30)
 
-# Magic Weapons
-magic_axe = MagicWeapon("Glowing Two-Handed Axe", 6, 2)
-magic_dagger = MagicWeapon("Poisoned Dagger", 3, 0)
+# Magic Items
+magic_axe = MagicWeapon("Glowing Two-Handed Axe", 6, 2, 35)
+magic_dagger = MagicWeapon("Poisoned Dagger", 3, 0, 30)
 
 # Armor - attributes are name and defense
-leather = Armor("leather jerkin", 2)
-plate = Armor("plated mail", 4)
-robes = Armor("cloth robe", 1)
+leather = Armor("leather jerkin", 2, 10)
+plate = Armor("plated mail", 4, 15)
+robes = Armor("cloth robe", 1, 8)
 
 # Items - attributes are name, plus_hp, plus_mana, and damage
-healing_potion = Item("healing potion", 10, 0, 0)
-mana_potion = Item("mana potion", 0, 10, 0)
-frost_potion = Item("frost potion", 0, 0, 10)
+healing_potion = Item("healing potion", 10, 0, 0, 5)
+mana_potion = Item("mana potion", 0, 10, 0, 5)
+frost_potion = Item("frost potion", 0, 0, 10, 5)
 
 # Monsters - attributes are: Name, max HP, HP, strength, AC, sta, XP, weapon
-orc = Monster("an orc", 21, 15, 2, 3, 7, 5, 'mace')
-goblin = Monster("a goblin", 20, 15, 2, 8, 8, 4, 'dagger')
-kobold = Monster("a kobold", 19, 15, 3, 7, 8, 5, 'flail')
-spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 6, 'fangs')
+orc = Monster("an orc", 21, 15, 2, 3, 7, 5, 'mace', 0)
+goblin = Monster("a goblin", 20, 15, 2, 8, 8, 4, 'dagger', 0)
+kobold = Monster("a kobold", 19, 15, 3, 7, 8, 5, 'flail', 0)
+spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 6, 'fangs', 0)
 # Player - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana, MANA
-#          equipment, items, xp, gold, back, used_item, weapon, armor, combat, special
-player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 0, 0, False, False, "", "", False, 0)
+#          equipment, items, gold, xp, back, used_item, weapon, armor, combat, special
+player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 10, 0, False, False, "", "", False, 0)
 #Boss - attributes are: Name, HP, AC, spells
 sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball', 'meteor', 'ice strike'])
 
@@ -719,6 +776,6 @@ random_room = [rooms.room1, rooms.room2, rooms.room3, rooms.room4]
 items = [healing_potion, mana_potion, frost_potion]
 weapons = [bastard_sword, staff, dagger, spear, mace, two_hander, poleaxe]
 armor = [leather, plate, robes]
-magic_weapons = [magic_axe, magic_dagger]
+magic_items = [magic_axe, magic_dagger]
 
-rooms.room3()
+rooms.start()

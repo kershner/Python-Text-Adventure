@@ -76,8 +76,8 @@ copper door down a [hallway] to your left."""
 
 def room2():
     possible_loot = True
-    if main.monster_chance():
-        main.random_monster()
+    #if main.monster_chance():
+    #    main.random_monster()
     print """
 You have entered a large open chamber.  Iron tracks lead down three separate
 tunnels, each blocked by a hastily constructed door.  A distant mechanical
@@ -137,7 +137,7 @@ There are three doors at the end of three tunnels ahead of you. One to the
             else:
                 raw_input("The door is locked!")
         elif choice == "east" or choice == "south":
-            main.room_selector()
+            shop_room()
         else:
             print "\nChoose a door to continue."
             continue
@@ -350,6 +350,172 @@ The way forward is marked by two doors.  One made of [steel] and one of
             continue
 
 
+def shop_room():
+    raw_input('''
+You open the door and are greeted by a most curious sight.  A small goblin
+sits behind a dusty wooden counter, his height extended by the stack of ancient
+tomes serving as his chair.  Behind him are many rows of shelves containing
+various weapons, armor, and items. > ''')
+    raw_input('''
+The goblin recognizes your surprise and is quick to address your fears. > ''')
+    raw_input('''
+"Woah there, human!  Stay your blade - I am not like my small minded brethren
+you have no doubt encountered on your journey here.  I am but a simple merchant.
+I seek only trade and riches, I have no desire to maim and kill. Sneezlebrixx
+is my name.  Please, have a look at my wares!" > ''')
+    while True:
+        if main.player.player_class == 'mage':
+            choice = raw_input("\n[Search] | [Shop] | [Inventory] | [Spells]"
+                               " | [Status] | [Rest] | [Proceed] > ").lower()
+        else:
+            choice = raw_input("\n[Search] | [Shop] | [Inventory] | [Status]"
+                               " | [Rest] | [Proceed] > ").lower()
+        if choice == "search":
+            print '''
+The room is damp and dimly-lit, and the walls are all made of cold stone.
+Sneezlebrixx's shop looks fairly well maintained, however, and many of the
+items on display look to be in excellent condition.'''
+        elif choice == 'shop':
+            shop()
+            continue
+        elif choice == "inventory":
+            main.player.inv()
+            continue
+        elif choice == 'spells':
+            main.player.spells(main.goblin)
+            continue
+        elif choice == "status":
+            main.player.status()
+            continue
+        elif choice == "rest":
+            main.player.back = False
+            main.player.rest()
+            if main.player.back:
+                continue
+        elif choice == "proceed":
+            break
+    raw_input('''
+Sneezlebrixx shows you to the shop's exit: a squat wooden door clearly
+designed for smaller creatures such as kobolds or halflings.  The goblin
+waves as you bend down to open the tiny door. > ''')
+    main.room_selector()
+def shop():
+    print '\n"What would you like to see, human?"'
+    while True:
+        item_type = raw_input('\n[Weapons] | [Armor] | [Items] | [Magic] Items'
+                              ' | [Back] > ').lower()
+        if item_type == 'back':
+            break
+        elif item_type == 'weapons':
+            print '\nWeapons:'
+            for i in main.weapons:
+                print main.weapons.index(i), i.name
+            while True:
+                choice = raw_input('\nInspect an item with its number or [Back] > ')
+                if choice == 'back':
+                    break
+                else:
+                    print '\n', main.weapons[int(choice)].name.title()
+                    print 'Attack: %d \t AC Penalty: %d' % \
+                          (main.weapons[int(choice)].attack,
+                           main.weapons[int(choice)].ac_penalty)
+                    print 'Price: %d gold' % main.weapons[int(choice)].price
+                    while True:
+                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        if confirm == 'back':
+                            break
+                        elif confirm == 'buy':
+                            if main.player.gold < main.weapons[int(choice)].price:
+                                print 'You don\'t have enough gold!'
+                            else:
+                                main.player.gold -= main.weapons[int(choice)].price
+                                main.player.equipment.append(main.weapons[int(choice)])
+                                raw_input('\nYou have purchased the %s!' %
+                                          main.weapons[int(choice)].name)
+                                break
+                    break
+        elif item_type == 'armor':
+            print '\nArmor:'
+            for i in main.armor:
+                print main.armor.index(i), i.name
+            while True:
+                choice = raw_input('\nInspect an item with its number or [Back] > ')
+                if choice == 'back':
+                    break
+                else:
+                    print '\n', main.armor[int(choice)].name.title()
+                    print 'Defense: %d' % main.armor[int(choice)].defense
+                    print 'Price: %d gold' % main.armor[int(choice)].price
+                    while True:
+                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        if confirm == 'back':
+                            break
+                        elif confirm == 'buy':
+                            if main.player.gold < main.armor[int(choice)].price:
+                                print 'You don\'t have enough gold!'
+                            else:
+                                main.player.gold -= main.armor[int(choice)].price
+                                main.player.equipment.append(main.armor[int(choice)])
+                                raw_input('\nYou have purchased the %s!' %
+                                          main.armor[int(choice)].name)
+                                break
+                    break
+        elif item_type == 'items':
+            print '\nItems:'
+            for i in main.items:
+                print main.items.index(i), i.name
+            while True:
+                choice = raw_input('\nInspect an item with its number or [Back] > ')
+                if choice == 'back':
+                    break
+                else:
+                    print '\n', main.items[int(choice)].name.title()
+                    print 'HP Bonus: %d' % main.items[int(choice)].plus_hp, \
+                          '\t', 'MP Bonus: %d' % main.items[int(choice)].plus_mana
+                    print 'Damage: %d' % main.items[int(choice)].damage
+                    print '\nPrice: %d gold' % main.items[int(choice)].price
+                    while True:
+                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        if confirm == 'back':
+                            break
+                        elif confirm == 'buy':
+                            if main.player.gold < main.items[int(choice)].price:
+                                print 'You don\'t have enough gold!'
+                            else:
+                                main.player.gold -= main.items[int(choice)].price
+                                main.player.items.append(main.items[int(choice)])
+                                raw_input('\nYou have purchased the %s!' %
+                                          main.items[int(choice)].name)
+                                break
+                    break
+        elif item_type == 'magic':
+            print '\nMagic Items:'
+            for i in main.magic_items:
+                print main.magic_items.index(i), i.name
+            while True:
+                choice = raw_input('\nInspect an item with its number or [Back] > ')
+                if choice == 'back':
+                    break
+                else:
+                    print '\n', main.magic_items[int(choice)].name.title()
+                    print 'Attack: %d \t AC Penalty: %d' % \
+                          (main.magic_items[int(choice)].attack,
+                           main.magic_items[int(choice)].ac_penalty)
+                    print 'Price: %d gold' % main.magic_items[int(choice)].price
+                    while True:
+                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        if confirm == 'back':
+                            break
+                        elif confirm == 'buy':
+                            if main.player.gold < main.magic_items[int(choice)].price:
+                                print 'You don\'t have enough gold!'
+                            else:
+                                main.player.gold -= main.magic_items[int(choice)].price
+                                main.player.equipment.append(main.magic_items[int(choice)])
+                                raw_input('\nYou have purchased the %s!' %
+                                          main.magic_items[int(choice)].name)
+                                break
+                    break
 def final_room():
     raw_input('''
 You fling open the door and are greeted by an intense gust of warm, earthy
@@ -366,7 +532,7 @@ You stand now in a truly immense underground chamber dominated by a
 tremendous lake.  Though you can clearly hear the sounds of lapping water
 nearby, much of the lake itself is obscured by the extreme darkness of the
 chamber.  The gloom is sharply broken by a few lone rays of sunlight pouring
-in from a crack in the chambers' ceiling.  The light partially illuminates a
+in from a crack in the chamber's ceiling.  The light partially illuminates a
 small island at the lake's center and a narrow bridge leading to it from the
 shore you now stand upon. > ''')
     while True:
@@ -462,11 +628,12 @@ ye geared and on ye way.\" > """
             raw_input("""
 \"We're gonna get along great, %s!  Let me just grab ye some suitable arms
 and armor from the store room.\" > """ % main.player.name)
-            raw_input("\nFenton returns with a well crafted bastard sword and set "
-                      "of full plate. >")
+            raw_input("\nFenton returns with a well crafted bastard sword, set"
+                      " of full plate, and a healing potion. > ")
             main.player.mp = 0
             main.player.equipment.append(main.bastard_sword)
             main.player.equipment.append(main.plate)
+            main.player.items.append(main.healing_potion)
             main.player.equipment[0].equip()
             main.player.equipment[1].equip()
             raw_input("")
@@ -480,11 +647,10 @@ Best o' luck to ye!\""""
 to yerself while I go fetch yer gear from the store room.\" > """ % main.player.name)
             raw_input('''
 Fenton returns with a well crafted dagger, a tough looking leather jerkin, and
-a few healing potions. > ''')
+a healing potion. > ''')
             main.player.mp = 6
             main.player.equipment.append(main.dagger)
             main.player.equipment.append(main.leather)
-            main.player.items.append(main.healing_potion)
             main.player.items.append(main.healing_potion)
             main.player.equipment[0].equip()
             main.player.equipment[1].equip()
@@ -501,10 +667,9 @@ Best o' luck to ye!\""""
 'round here fer yer type, but I'll see what I can find.\" > """ % main.player.name)
             raw_input("""
 Fenton returns with a gnarled looking staff, some freshly pressed robes, and
-a few mana potions. > """)
+a mana potion. > """)
             main.player.equipment.append(main.staff)
             main.player.equipment.append(main.robes)
-            main.player.items.append(main.mana_potion)
             main.player.items.append(main.mana_potion)
             main.player.equipment[0].equip()
             main.player.equipment[1].equip()
