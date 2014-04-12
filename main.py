@@ -36,13 +36,21 @@ class Player(object):
             if choice == 'back':
                 player.back = True
                 break
-            elif choice == 'weapon':
+            elif choice in 'weapon':
                 self.melee_attack(enemy)
                 break
             elif choice == 'gut':
-                enemy.stunned = 2
-                raw_input('\n%s punches %s in the stomach! %s doubles over in'
-                          ' pain.' % (self.name, enemy.name, enemy.name))
+                if player.special < 1:
+                    raw_input('\nYou can\'t get a good shot at their stomach!')
+                    continue
+                else:
+                    player.special -= 2
+                    enemy.stunned = 2
+                    damage = random.randint(1, 3)
+                    self.hp -= damage
+                    raw_input('\n%s punches %s in the stomach for %d damage!'
+                              ' %s doubles over in pain.'
+                              % (self.name, enemy.name, damage, enemy.name))
                 break
 
     def melee_attack(self, enemy):
@@ -96,8 +104,7 @@ class Player(object):
                 else:
                     raw_input('\nYou attempt to maneuver behind the creature...')
                     attack = 5 + self.strength + int(self.sta * random.random())
-                    damage = int(random.random() * (self.sta / 2)) + \
-                             self.strength + 10
+                    damage = int(random.random() * (self.sta / 2)) + self.strength + 10
                     if attack >= enemy.ac:
                         raw_input("\n%s backstabs %s with their %s for %d damage!" %
                                  (self.name, enemy.name, self.weapon, damage))
@@ -156,12 +163,11 @@ class Player(object):
     def inv(self):
         player.back = False
         while True:
-            if len(self.equipment) < 1 and len(self.items) < 1 and \
-                            self.gold < 1:
+            if len(self.equipment) < 1 and len(self.items) < 1 and self.gold < 1:
                 print "\nYou are not currently carrying anything."
             else:
-                print "\nYou are currently carrying:"
-                print "Equipment:"
+                print "\nYou are currently carrying..."
+                print "\nEquipment:"
                 for i in self.equipment:
                     print self.equipment.index(i), i.name
                 print "\nItems:"
@@ -184,13 +190,10 @@ class Player(object):
                     break
                 elif not player.combat:
                     self.use_item(spider)
-                elif choice == "back":
-                    continue
-                else:
-                    player.used_item = False
-                    break
             elif choice == "back":
-                player.back = True
+                continue
+            else:
+                player.used_item = False
                 break
 
     def change_equipment(self):
@@ -272,7 +275,7 @@ class Player(object):
             print "HP: %d, MP: %d" % (player.hp, player.mana)
             print "Strength: %d, Stamina: %d" % (player.strength, player.sta)
             print "AC: %d" % player.ac
-            print "\nInventory:"
+            print "\nEquipped:"
             if player.weapon == "":
                 print "Weapon: None"
             else:
@@ -335,13 +338,12 @@ Moments after you lay down, you begin to doze off. > """)
                           % hours)
                 if player.player_class == "mage":
                     if player.hp == player.max_hp and \
-                                    player.mana != player.max_mana:
+                       player.mana != player.max_mana:
                         player.mana += mp_regained
                         if self.mana > self.max_mana:
                             self.mana = self.max_mana
                         print "\n%s regains %d MP!" % (player.name, mp_regained)
-                    elif player.hp != player.max_hp and \
-                                    player.mana == player.max_mana:
+                    elif player.hp != player.max_hp and player.mana == player.max_mana:
                         player.hp += hours
                         if self.hp > self.max_hp:
                             self.hp = self.max_hp
@@ -438,7 +440,7 @@ huge talons each the size of a long spear. > ''')
     def boss_battle(self, player):
         turn = 1
         player.combat = True
-        # Victory/Death conditions
+        player.special = 2
         while True:
             print "\n%s\'s HP: %d" % (player.name, player.hp)
             print "%s\'s MP: %d" % (player.name, player.mana)
@@ -508,11 +510,11 @@ The %s is slain and the evil corruption plaguing the land has been destroyed.
             else:
                 raw_input('\n%s begins to chant softly...' % self.name)
                 self.attack(player)
-            turn += 1
             if player.hp < 1:
                 raw_input('''
 %s has been slain by %s!\n\n\n\n\nGame Over. > ''' % (player.name, self.name))
                 quit()
+            turn += 1
 
 
 class Weapon(object):
@@ -524,14 +526,14 @@ class Weapon(object):
 
     def equip(self):
         player.strength += self.attack
-        player.sta += (self.attack / 2)
+        player.sta += self.attack / 2
         player.ac -= self.ac_penalty
         player.weapon = self.name
         print "\nYou have equipped the %s." % self.name
 
     def unequip(self):
         player.strength -= self.attack
-        player.sta -= (self.attack / 2)
+        player.sta -= self.attack / 2
         player.ac += self.ac_penalty
         player.weapon = ""
         print "\nYou have unequipped the %s." % self.name
@@ -546,14 +548,14 @@ class MagicWeapon(object):
 
     def equip(self):
         player.strength += self.attack
-        player.sta += (self.attack / 2)
+        player.sta += self.attack / 2
         player.ac -= self.ac_penalty
         player.weapon = self.name
         print "\nYou have equipped the %s." % self.name
 
     def unequip(self):
         player.strength -= self.attack
-        player.sta -= (self.attack / 2)
+        player.sta -= self.attack / 2
         player.ac += self.ac_penalty
         player.weapon = ""
         print "\nYou have unequipped the %s." % self.name
@@ -664,6 +666,7 @@ def combat_choice(player, enemy):
             player.flee()
             break
 
+
 # Victory conditions!
 def victory(player, enemy):
     player.combat = False
@@ -760,11 +763,11 @@ def loot_chance():
 
 def loot():
     loot_type = random.randint(1, 100)
-    if 16 < loot_type < 95:
+    if 36 < loot_type < 75:
         i = random.choice(items)
         player.items.append(i)
         raw_input("\nYou find a %s!" % i.name)
-    elif 0 < loot_type < 15:
+    elif 0 < loot_type < 35:
         i = random.choice(weapons)
         player.equipment.append(i)
         raw_input("\nYou find a %s!" % i.name)
@@ -804,7 +807,7 @@ spider = Monster("a giant tarantula", 21, 21, 4, 6, 7, 6, 'fangs', 0)
 # Player - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana,
 # MANA equipment, items, gold, xp, back, used_item, weapon, armor, combat,
 # special
-player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 10, 0, False,
+player = Player("Tyler", "", 21, 21, 2, 6, 5, 0, 0, [], [], 15, 0, False,
                 False, "", "", False, 0)
 #Boss - attributes are: Name, HP, AC, spells
 sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball',

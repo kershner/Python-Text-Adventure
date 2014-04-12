@@ -230,7 +230,7 @@ Two large yellow eyes materialize in the bark and fix themselves upon
 you. > """)
             print'''
 "I have no name, and your kind has no words for my being. My very existence is
-beyond anything in your experience - you can never fully understand my true
+beyond anything in your experience - you will never fully understand my true
 essence.  Be content to perceive me as your kind often does, simply as a
 benevolent nature spirit."'''
             while True:
@@ -411,10 +411,13 @@ Sneezlebrixx shows you to the shop's exit: a squat wooden door clearly
 designed for smaller creatures such as kobolds or halflings.  The goblin
 waves as you bend down to open the tiny door. > ''')
     main.room_selector()
+
+
 def shop():
     print '\n"What would you like to see, human?"'
     while True:
-        item_type = raw_input('\n[Weapons] | [Armor] | [Items] | [Magic] Items'
+        print '\nGold: %d' % main.player.gold
+        item_type = raw_input('[Weapons] | [Armor] | [Items] | [Magic] Items'
                               ' | [Back] > ').lower()
         if item_type == 'back':
             break
@@ -431,10 +434,10 @@ def shop():
                     print 'Attack: %d \t AC Penalty: %d' % \
                           (main.weapons[int(choice)].attack,
                            main.weapons[int(choice)].ac_penalty)
-                    print 'Price: %d gold' % main.weapons[int(choice)].price
-                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
+                    print '\nPrice: %d gold' % main.weapons[int(choice)].price
                     while True:
-                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        print '\n%s\'s gold: %d' % (main.player.name, main.player.gold)
+                        confirm = raw_input('[Buy] | [Back] > ').lower()
                         if confirm == 'back':
                             break
                         elif confirm == 'buy':
@@ -458,10 +461,10 @@ def shop():
                 else:
                     print '\n', main.armor[int(choice)].name.title()
                     print 'Defense: %d' % main.armor[int(choice)].defense
-                    print 'Price: %d gold' % main.armor[int(choice)].price
-                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
+                    print '\nPrice: %d gold' % main.armor[int(choice)].price
                     while True:
-                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        print '\n%s\'s gold: %d' % (main.player.name, main.player.gold)
+                        confirm = raw_input('[Buy] | [Back] > ').lower()
                         if confirm == 'back':
                             break
                         elif confirm == 'buy':
@@ -488,9 +491,9 @@ def shop():
                           '\t', 'MP Bonus: %d' % main.items[int(choice)].plus_mana
                     print 'Damage: %d' % main.items[int(choice)].damage
                     print '\nPrice: %d gold' % main.items[int(choice)].price
-                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
                     while True:
-                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        print '\n%s\'s gold: %d' % (main.player.name, main.player.gold)
+                        confirm = raw_input('[Buy] | [Back] > ').lower()
                         if confirm == 'back':
                             break
                         elif confirm == 'buy':
@@ -516,10 +519,10 @@ def shop():
                     print 'Attack: %d \t AC Penalty: %d' % \
                           (main.magic_items[int(choice)].attack,
                            main.magic_items[int(choice)].ac_penalty)
-                    print 'Price: %d gold' % main.magic_items[int(choice)].price
-                    print '%s\'s gold: %d' % (main.player.name, main.player.gold)
+                    print '\nPrice: %d gold' % main.magic_items[int(choice)].price
                     while True:
-                        confirm = raw_input('\n[Buy] | [Back] > ').lower()
+                        print '\n%s\'s gold: %d' % (main.player.name, main.player.gold)
+                        confirm = raw_input('[Buy] | [Back] > ').lower()
                         if confirm == 'back':
                             break
                         elif confirm == 'buy':
@@ -532,6 +535,8 @@ def shop():
                                           main.magic_items[int(choice)].name)
                                 break
                     break
+
+
 def final_room():
     raw_input('''
 You fling open the door and are greeted by an intense gust of warm, earthy
@@ -656,7 +661,7 @@ and armor from the store room.\" > """ % main.player.name)
             main.player.equipment[1].equip()
             raw_input("")
             print """
-\"Now ye look like a proper warrior.  Head south and you'll come to the mine.
+\"Now ye look like a proper warrior!  Head south and you'll come to the mine.
 Best o' luck to ye!\""""
             mine_entrance()
         elif main.player.player_class == "thief":
