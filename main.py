@@ -47,7 +47,7 @@ class Player(object):
                     player.special -= 2
                     enemy.stunned = 2
                     damage = random.randint(1, 3)
-                    self.hp -= damage
+                    enemy.hp -= damage
                     raw_input('\n%s punches %s in the stomach for %d damage!'
                               ' %s doubles over in pain.'
                               % (self.name, enemy.name, damage, enemy.name))
@@ -177,7 +177,7 @@ class Player(object):
                     for i in self.items:
                         print self.items.index(i), i.name
                 print '\nGold: %d' % player.gold
-            choice = raw_input("\n[Equip] | [Use] | [Back] > ").lower()
+            choice = raw_input("\n[Equip] | [Use] | [Inspect] | [Back] > ").lower()
             if choice == "equip":
                 self.change_equipment()
                 if player.back:
@@ -190,8 +190,12 @@ class Player(object):
                     break
                 elif not player.combat:
                     self.use_item(spider)
-            elif choice == "back":
+            elif choice == 'inspect':
+                self.inspect()
                 continue
+            elif choice == "back":
+                player.back = True
+                break
             else:
                 player.used_item = False
                 break
@@ -267,6 +271,28 @@ class Player(object):
             except IndexError:
                 print '\nYou are not currently carrying that item!'
                 continue
+
+    def inspect(self):
+        player.back = False
+        print('\nEquipment:')
+        for i in self.equipment:
+                    print self.equipment.index(i), i.name
+        while True:
+            try:
+                choice = raw_input('\nInspect an item by its number or [BACK] > ').lower()
+                if choice == 'back':
+                    player.back = True
+                    break
+                intchoice = int(choice)
+                if hasattr(self.equipment[intchoice], 'attack'):
+                    print '\n', self.equipment[intchoice].name.title()
+                    print 'Attack: %d' % self.equipment[intchoice].attack
+                    print 'AC Penalty: %d' % self.equipment[intchoice].ac_penalty
+                else:
+                    print '\n', self.equipment[intchoice].name.title()
+                    print 'Defense: %d' % self.equipment[intchoice].defense
+            except IndexError:
+                print '\nChoose an item by its number'
 
     def status(self):
         player.back = False
