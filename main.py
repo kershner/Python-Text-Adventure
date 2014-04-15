@@ -57,11 +57,11 @@ class Player(object):
         attack = 2 + self.strength + int(self.sta * random.random())
         damage = int(random.random() * (self.sta / 2)) + self.strength
         if attack >= enemy.ac:
-            raw_input("\n%s strikes %s with their %s for %d damage!" %
+            raw_input('\n%s strikes %s with their %s for %d damage!' %
                      (self.name, enemy.name, self.weapon, damage))
             enemy.hp -= damage
         else:
-            print "\n%s missed!" % self.name
+            print '\n%s missed!' % self.name
 
     def thievery(self, enemy):
         player.back = False
@@ -81,17 +81,17 @@ class Player(object):
                     elif 16 < loot_type < 65:
                         i = random.choice(items)
                         player.items.append(i)
-                        raw_input("\nYou successfully steal a %s!" % i.name)
+                        raw_input('\nYou successfully steal a %s!' % i.name)
                         break
                     elif 0 < loot_type < 15:
                         i = random.choice(weapons)
                         player.equipment.append(i)
-                        raw_input("\nYou successfully steal a %s!" % i.name)
+                        raw_input('\nYou successfully steal a %s!' % i.name)
                         break
                     else:
                         i = random.choice(magic_items)
                         player.equipment.append(i)
-                        raw_input("\nYou successfully steal a %s!" % i.name)
+                        raw_input('\nYou successfully steal a %s!' % i.name)
                         break
                 else:
                     raw_input('\nThe creature catches you rifling through its '
@@ -106,53 +106,53 @@ class Player(object):
                     attack = 5 + self.strength + int(self.sta * random.random())
                     damage = int(random.random() * (self.sta / 2)) + self.strength + 10
                     if attack >= enemy.ac:
-                        raw_input("\n%s backstabs %s with their %s for %d damage!" %
+                        raw_input('\n%s backstabs %s with their %s for %d damage!' %
                                  (self.name, enemy.name, self.weapon, damage))
                         enemy.hp -= damage
                         player.special -= 1
                         break
                     else:
-                        print "\n%s missed!" % self.name
+                        print '\n%s missed!' % self.name
                         player.special -= 1
                         break
 
     def spells(self, enemy):
         player.back = False
         while True:
-            print "\n[Heal | 4 MP] | [Fireball | 7 MP] | [Stun | 10 MP]" \
-                  " | [Back] > "
-            print " MP: %d" % player.mana
-            choice = raw_input("\nSelect Spell > ").lower()
-            if choice == "back":
+            print '\n[Heal | 4 MP] | [Fireball | 7 MP] | [Stun | 10 MP]' \
+                  ' | [Back] > '
+            print ' MP: %d' % player.mana
+            choice = raw_input('\nSelect Spell > ').lower()
+            if choice == 'back':
                 player.back = True
                 break
-            elif choice == "heal":
+            elif choice == 'heal':
                 if player.mana < 4:
-                    print "You do not have enough mana to cast Heal!"
+                    print 'You do not have enough mana to cast Heal!'
                 else:
                     self.hp += 8
                     self.mana -= 4
                     if self.hp > self.max_hp:
                         self.hp = self.max_hp
-                    print "\n%s casts Heal and regains 8 HP!" % player.name
+                    print '\n%s casts Heal and regains 8 HP!' % player.name
                     break
-            elif choice == "fireball":
+            elif choice == 'fireball':
                 if not player.combat:
-                    raw_input("\nNothing to cast Fireball on! > ")
+                    raw_input('\nNothing to cast Fireball on! > ')
                 elif player.mana < 7:
-                    print "You do not have enough mana to cast Fireball!"
+                    print 'You do not have enough mana to cast Fireball!'
                 else:
                     self.mana -= 7
                     spell_damage = random.randint(12, 15)
                     enemy.hp -= spell_damage
-                    print "\n%s casts Fireball! %s takes %d damage!" % \
+                    print '\n%s casts Fireball! %s takes %d damage!' % \
                           (player.name, enemy.name, spell_damage)
                     break
-            elif choice == "stun":
+            elif choice == 'stun':
                 if not player.combat:
                     raw_input('\nNothing to cast Stun on! > ')
                 elif player.mana < 5:
-                    print "You do not have enough mana to cast Stun!"
+                    print 'You do not have enough mana to cast Stun!'
                 else:
                     self.mana -= 10
                     enemy.stunned = 2
@@ -164,27 +164,27 @@ class Player(object):
         player.back = False
         while True:
             if len(self.equipment) < 1 and len(self.items) < 1 and self.gold < 1:
-                print "\nYou are not currently carrying anything."
+                print '\nYou are not currently carrying anything.'
             else:
-                print "\nYou are currently carrying..."
-                print "\nEquipment:"
+                print '\nYou are currently carrying...'
+                print '\nEquipment:'
                 for i in self.equipment:
                     print self.equipment.index(i), i.name
-                print "\nItems:"
+                print '\nItems:'
                 if len(player.items) < 1:
-                    print "None"
+                    print 'None'
                 else:
                     for i in self.items:
                         print self.items.index(i), i.name
                 print '\nGold: %d' % player.gold
-            choice = raw_input("\n[Equip] | [Use] | [Inspect] | [Back] > ").lower()
-            if choice == "equip":
+            choice = raw_input('\n[Equip] | [Use] | [Inspect] | [Back] > ').lower()
+            if choice == 'equip':
                 self.change_equipment()
                 if player.back:
                     continue
                 else:
                     break
-            elif choice == "use":
+            elif choice == 'use':
                 if player.combat:
                     player.used_item = True
                     break
@@ -193,7 +193,7 @@ class Player(object):
             elif choice == 'inspect':
                 self.inspect()
                 continue
-            elif choice == "back":
+            elif choice == 'back':
                 player.back = True
                 break
             else:
@@ -203,23 +203,23 @@ class Player(object):
     def change_equipment(self):
         player.back = False
         while True:
-            choice = raw_input("\nSelect item with its number or "
-                               "[Back] > ").lower()
-            if choice == "back":
+            choice = raw_input('\nSelect item with its number or '
+                               '[Back] > ').lower()
+            if choice == 'back':
                 player.back = True
                 break
             intchoice = int(choice)
             if player.weapon == self.equipment[intchoice].name or \
                     player.armor == self.equipment[intchoice].name:
-                confirm = raw_input("Would you like to unequip the %s? > " %
+                confirm = raw_input('Would you like to unequip the %s? > ' %
                                     self.equipment[intchoice].name).lower()
-                if "yes" in confirm:
+                if 'yes' in confirm:
                     self.equipment[intchoice].unequip()
                     break
             else:
-                confirm = raw_input("Would you like to equip the %s? > " %
+                confirm = raw_input('Would you like to equip the %s? > ' %
                                     self.equipment[intchoice].name).lower()
-                if "yes" in confirm:
+                if 'yes' in confirm:
                     self.equipment[intchoice].equip()
                     break
 
@@ -228,23 +228,23 @@ class Player(object):
         player.back = False
         while not player.used_item:
             try:
-                choice = raw_input("Select item by its number or "
-                                   "[Back] > ").lower()
-                if choice == "back":
+                choice = raw_input('Select item by its number or '
+                                   '[Back] > ').lower()
+                if choice == 'back':
                     player.back = True
                     break
                 intchoice = int(choice)
                 itemchoice = self.items[intchoice]
-                confirm = raw_input("Would you like to use the %s? > " %
+                confirm = raw_input('Would you like to use the %s? > ' %
                                     self.items[intchoice].name).lower()
-                if "yes" in confirm:
+                if 'yes' in confirm:
                     # These if statements are figuring out if the item chosen
                     # will add HP/Mana to the player or deal damage to the enemy
                     if itemchoice.plus_mana == 0 and itemchoice.damage == 0:
                         self.hp += itemchoice.plus_hp
                         if self.hp > self.max_hp:
                             self.hp = self.max_hp
-                        raw_input("\n%s uses the %s and regains %d HP!" %
+                        raw_input('\n%s uses the %s and regains %d HP!' %
                                   (self.name, itemchoice.name,
                                    itemchoice.plus_hp))
                         del self.items[intchoice]
@@ -253,16 +253,16 @@ class Player(object):
                         self.mana += itemchoice.plus_mana
                         if self.mana > self.max_mana:
                             self.mana = self.max_mana
-                        raw_input("\n%s uses the %s and regains %d MP!" %
+                        raw_input('\n%s uses the %s and regains %d MP!' %
                                   (self.name, itemchoice.name,
                                    itemchoice.plus_mana))
                         del self.items[intchoice]
                         player.used_item = True
                     elif itemchoice.plus_hp == 0 and itemchoice.plus_mana == 0:
                         if not player.combat:
-                            raw_input("\nNothing to use %s on!" % itemchoice.name)
+                            raw_input('\nNothing to use %s on!' % itemchoice.name)
                         else:
-                            raw_input("\n%s uses the %s on %s and deals %d damage!" %
+                            raw_input('\n%s uses the %s on %s and deals %d damage!' %
                                       (self.name, itemchoice.name, enemy.name,
                                        itemchoice.damage))
                             enemy.hp -= itemchoice.damage
@@ -306,7 +306,7 @@ class Player(object):
                 print 'Weapon: None'
             else:
                 print 'Weapon: %s' % player.weapon
-            if player.armor == "":
+            if player.armor == '':
                 print 'Armor: None'
             else:
                 print 'Armor: %s' % player.armor
