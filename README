@@ -1,0 +1,11 @@
+First (real) Project - a Python Text Adventure
+
+It seems like everyone does a text adventure for their first programming
+project - and I can see why.  They require a whole lot of basic syntax, so
+they are great practice and good for committing concepts to memory.  They're
+also great to get a small glimpse into an actual software development cycle -
+getting a basic program working, refactor, add features, fix bugs, refactor,
+etc.  Most importantly, though: creating a text RPG is really fun!
+
+If you end up running this thing or spot any bugs just by looking at the code
+feel free to let me know, or offer any suggestions.
