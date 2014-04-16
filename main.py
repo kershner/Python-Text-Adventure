@@ -169,13 +169,13 @@ class Player(object):
                 print '\nYou are currently carrying...'
                 print '\nEquipment:'
                 for i in self.equipment:
-                    print self.equipment.index(i), i.name
+                    print i.name
                 print '\nItems:'
                 if len(player.items) < 1:
                     print 'None'
                 else:
                     for i in self.items:
-                        print self.items.index(i), i.name
+                        print i.name
                 print '\nGold: %d' % player.gold
             choice = raw_input('\n[Equip] | [Use] | [Inspect] | [Back] > ').lower()
             if choice == 'equip':
@@ -203,6 +203,9 @@ class Player(object):
     def change_equipment(self):
         player.back = False
         while True:
+            print '\nEquipment:'
+            for i in self.equipment:
+                print self.equipment.index(i), i.name
             choice = raw_input('\nSelect item with its number or '
                                '[Back] > ').lower()
             if choice == 'back':
@@ -227,8 +230,11 @@ class Player(object):
         player.used_item = False
         player.back = False
         while not player.used_item:
+            print '\nItems:'
+            for i in self.items:
+                print self.items.index(i), i.name
             try:
-                choice = raw_input('Select item by its number or '
+                choice = raw_input('\nSelect item by its number or '
                                    '[Back] > ').lower()
                 if choice == 'back':
                     player.back = True
@@ -297,7 +303,8 @@ class Player(object):
     def status(self):
         player.back = False
         while True:
-            print('\n%s\'s status:' % player.name)
+            print '\n////////////////////////////'
+            print '%s\'s status:' % player.name
             print 'HP: %d, MP: %d' % (player.hp, player.mana)
             print 'Strength: %d, Stamina: %d' % (player.strength, player.sta)
             print 'AC: %d' % player.ac
