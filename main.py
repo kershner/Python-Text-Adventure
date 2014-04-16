@@ -6,7 +6,7 @@ import rooms
 class Player(object):
     def __init__(self, name, player_class, max_hp, hp, strength, ac, sta,
                  max_mana, mana, equipment, items, gold, xp, back, used_item,
-                 weapon, armor, combat, special):
+                 weapon, armor, combat, special, room):
         self.name = name
         self.player_class = player_class
         self.max_hp = max_hp
@@ -26,6 +26,7 @@ class Player(object):
         self.armor = armor
         self.combat = combat
         self.special = special
+        self.room = room
     level = 1
 
     def attack(self, enemy):
@@ -166,7 +167,8 @@ class Player(object):
             if len(self.equipment) < 1 and len(self.items) < 1 and self.gold < 1:
                 print '\nYou are not currently carrying anything.'
             else:
-                print '\nYou are currently carrying...'
+                print '\n////////////////////////////'
+                print 'You are currently carrying...'
                 print '\nEquipment:'
                 for i in self.equipment:
                     print i.name
@@ -475,57 +477,7 @@ huge talons each the size of a long spear. > ''')
         player.combat = True
         player.special = 2
         while True:
-            print '\n%s\'s HP: %d' % (player.name, player.hp)
-            print '%s\'s MP: %d' % (player.name, player.mana)
-            print '\n%s\'s HP: %d' % (self.name, self.hp)
-            while True:
-                if player.player_class == 'mage':
-                    choice = raw_input('\n[Attack] | [Spells] | [Inventory] | '
-                                       '[Status] | [Flee] > ').lower()
-                elif player.player_class == 'thief':
-                    choice = raw_input('\n[Attack] | [Thievery] | [Inventory] | '
-                                       '[Status] | [Flee] > ').lower()
-                else:
-                    choice = raw_input('\n[Attack] | [Spells] | [Inventory] | '
-                                       '[Status] > ').lower()
-                if choice == 'attack':
-                    if player.player_class == 'fighter':
-                        player.attack(self)
-                        if player.back:
-                            continue
-                    else:
-                        player.melee_attack(self)
-                    break
-                elif choice == 'spells':
-                    player.spells(self)
-                    if player.back:
-                        continue
-                    else:
-                        break
-                elif choice == 'thievery':
-                    player.thievery(self)
-                    if player.back:
-                        continue
-                    else:
-                        break
-                elif choice == 'inventory':
-                    player.inv()
-                    if player.used_item:
-                        player.use_item(self)
-                        if not player.used_item:
-                            continue
-                        elif player.used_item:
-                            break
-                    elif player.back:
-                        continue
-                    else:
-                        break
-                elif choice == 'status':
-                    player.status()
-                    if player.back:
-                        continue
-                    else:
-                        break
+            combat_choice(player, self)
             if self.name == 'a mysterious figure' and self.hp <= 0:
                 self.transform()
             elif self.hp < 1:
@@ -648,7 +600,16 @@ def combat_choice(player, enemy):
     print '%s\'s MP: %d' % (player.name, player.mana)
     while True:
         print '\n%s\'s HP: %d' % (enemy.name, enemy.hp)
-        if player.player_class == 'mage':
+        if player.room == rooms.final_room:
+            if player.player_class == 'mage':
+                choice = raw_input('\n[Attack] | [Spells] | [Inventory] | '
+                                   '[Status] > ').lower()
+            elif player.player_class == 'thief':
+                choice = raw_input('\n[Attack] | [Thievery] | [Inventory] | '
+                                   '[Status] > ').lower()
+            else:
+                choice = raw_input('\n[Attack] | [Inventory] | [Status] > ').lower()
+        elif player.player_class == 'mage':
             choice = raw_input('\n[Attack] | [Spells] | [Inventory] | '
                                '[Status] | [Flee] > ').lower()
         elif player.player_class == 'thief':
@@ -735,7 +696,7 @@ def victory(player, enemy):
 def room_selector():
     # When down to the final element of the list, go to final room
     if len(random_room) == 0:
-        rooms.final_room()
+        rooms.final_room.enter()
     else:
         i = random.choice(random_room)
         random_room.remove(i)
@@ -841,14 +802,15 @@ spider = Monster('a giant tarantula', 21, 21, 4, 6, 7, 6, 'fangs', 0)
 # MANA equipment, items, gold, xp, back, used_item, weapon, armor, combat,
 # special
 player = Player('', '', 21, 21, 2, 6, 5, 0, 0, [], [], 15, 0, False,
-                False, '', '', False, 0)
+                False, '', '', False, 0, None)
 #Boss - attributes are: Name, HP, AC, spells
 sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball',
                                                'meteor', 'ice strike'], 0)
 
 # Lists of functions, objects for randomization
 random_monsters = [orc, goblin, kobold, spider]
-random_room = [rooms.room1, rooms.room2, rooms.room3, rooms.room4]
+random_room = [rooms.room1.enter, rooms.shop.enter, rooms.room2.enter,
+               rooms.room3.enter, rooms.room4.enter]
 items = [healing_potion, mana_potion, frost_potion]
 weapons = [bastard_sword, staff, dagger, spear, mace, two_hander, poleaxe]
 armor = [leather, plate, robes]
