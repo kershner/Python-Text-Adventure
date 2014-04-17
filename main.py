@@ -851,4 +851,4 @@ weapons = [bastard_sword, staff, dagger, spear, mace, two_hander, poleaxe]
 armor = [leather, plate, robes]
 magic_items = [magic_axe, magic_dagger]
 
-rooms.start()
+rooms.title()

@@ -720,6 +720,16 @@ Best o' luck to ye!"'''
             print '\nChoose a class to continue.'
             continue
 
+# Title screen with sick ASCII Art
+def title():
+    try:
+        with open('title.txt', 'r') as title:
+            print title.read()
+        raw_input()
+        start()
+    except IOError:
+        start()
+
 # Instantiating the room classes from above so they can be used in main.py
 mine_entrance = MineEntrance()
 room1 = Room1()
