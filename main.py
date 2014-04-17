@@ -180,30 +180,25 @@ class Player(object):
                         print i.name
                 print '\nGold: %d' % player.gold
             choice = raw_input('\n[Equip] | [Use] | [Inspect] | [Back] > ').lower()
-
-            try:
-                if choice == 'equip':
-                    self.change_equipment()
-                    if player.back:
-                        continue
-                    else:
-                        break
-                elif choice == 'use':
-                    if player.combat:
-                        player.used_item = True
-                        break
-                    elif not player.combat:
-                        self.use_item(spider)
-                elif choice == 'inspect':
-                    self.inspect()
+            if choice == 'equip':
+                self.change_equipment()
+                if player.back:
                     continue
-                elif choice == 'back':
-                    player.back = True
-                    break
                 else:
-                    player.used_item = False
                     break
-            except ValueError:
+            elif choice == 'use':
+                if player.combat:
+                    player.used_item = True
+                    break
+                elif not player.combat:
+                    self.use_item(spider)
+            elif choice == 'inspect':
+                self.inspect()
+                continue
+            elif choice == 'back':
+                player.back = True
+                break
+            else:
                 continue
     def change_equipment(self):
         player.back = False
@@ -211,25 +206,28 @@ class Player(object):
             print '\nEquipment:'
             for i in self.equipment:
                 print self.equipment.index(i), i.name
-            choice = raw_input('\nSelect item with its number or '
-                               '[Back] > ').lower()
-            if choice == 'back':
-                player.back = True
-                break
-            intchoice = int(choice)
-            if player.weapon == self.equipment[intchoice].name or \
-                    player.armor == self.equipment[intchoice].name:
-                confirm = raw_input('Would you like to unequip the %s? > ' %
-                                    self.equipment[intchoice].name).lower()
-                if 'yes' in confirm:
-                    self.equipment[intchoice].unequip()
+            try:
+                choice = raw_input('\nSelect item with its number or '
+                                   '[Back] > ').lower()
+                if choice == 'back':
+                    player.back = True
                     break
-            else:
-                confirm = raw_input('Would you like to equip the %s? > ' %
-                                    self.equipment[intchoice].name).lower()
-                if 'yes' in confirm:
-                    self.equipment[intchoice].equip()
-                    break
+                intchoice = int(choice)
+                if player.weapon == self.equipment[intchoice].name or \
+                        player.armor == self.equipment[intchoice].name:
+                    confirm = raw_input('Would you like to unequip the %s? > ' %
+                                        self.equipment[intchoice].name).lower()
+                    if 'yes' in confirm:
+                        self.equipment[intchoice].unequip()
+                        break
+                else:
+                    confirm = raw_input('Would you like to equip the %s? > ' %
+                                        self.equipment[intchoice].name).lower()
+                    if 'yes' in confirm:
+                        self.equipment[intchoice].equip()
+                        break
+            except ValueError:
+                continue
 
     def use_item(self, enemy):
         player.used_item = False
@@ -301,7 +299,7 @@ class Player(object):
                 else:
                     print '\n', self.equipment[intchoice].name.title()
                     print 'Defense: %d' % self.equipment[intchoice].defense
-            except IndexError:
+            except ValueError:
                 print '\nChoose an item by its number'
 
     def status(self):

@@ -54,7 +54,7 @@ class Room1(object):
         main.player.room = room1
         if main.monster_chance():
             main.random_monster()
-            print '''
+            print '''\n\n\n\n\n
 The room is dimly lit by clumps of luminescent fungi growing in the cracks of
 the stone walls.'''
         else:
@@ -113,7 +113,7 @@ class Room2(object):
         main.player.room = room2
         if main.monster_chance():
             main.random_monster()
-        print '''
+        print '''\n\n\n\n\n
 You have entered a large open chamber.  Iron tracks lead down three separate
 tunnels, each blocked by a hastily constructed door.  A distant mechanical
 CLANK momentarily disturbs the total silence.'''
@@ -168,7 +168,7 @@ class Room3(object):
         main.player.room = room3
         if main.monster_chance():
             main.random_monster()
-        print '''
+        print '''\n\n\n\n\n
 You find yourself in a short hallway connected to a large open chamber.  The
 chamber itself is shaped like a great stone bowl, and as you approach the end
 of the hallway you can see the floor down a thirty foot stairway below.  At
@@ -312,7 +312,7 @@ class Room4(object):
         main.player.room = room4
         if main.monster_chance():
             main.random_monster()
-        print '''
+        print '''\n\n\n\n\n
 You find yourself in a dark and cluttered room.  The faint sound of dripping
 water echoes in the darkness.'''
         agency()
@@ -339,7 +339,7 @@ The way forward is marked by two doors.  One made of [steel] and one of
 class Shop(object):
     def enter(self):
         main.player.room = shop
-        raw_input('''
+        raw_input('''\n\n\n\n\n
 You open the door and are greeted by a most curious sight.  A small goblin
 sits behind a dusty wooden counter, his height extended by the stack of ancient
 tomes serving as his chair.  Behind him are many rows of shelves containing
@@ -348,9 +348,9 @@ various weapons, armor, and items. > ''')
 The goblin recognizes your surprise and is quick to address your fears. > ''')
         raw_input('''
 "Woah there, human!  Stay your blade - I am not like my small minded brethren
-you have no doubt encountered on your journey here.  I am but a simple merchant.
-I seek only trade and riches, I have no desire to maim or kill. Sneezlebrixx
-is my name.  Please, have a look at my wares!" > ''')
+you have no doubt encountered on your journey here.  I am but a simple
+merchant. I seek only trade and riches, I have no desire to maim or kill.
+Sneezlebrixx is my name.  Please, have a look at my wares!" > ''')
         agency()
 
     def search(self):
@@ -557,7 +557,7 @@ class FinalRoom(object):
 
     def enter(self):
         main.player.room = final_room
-        raw_input('''
+        raw_input('''\n\n\n\n\n
 You fling open the door and are greeted by an intense gust of warm, earthy
 air.  Before you stretches a long and cramped corridor with a downward
 slope.  You're forced to crouch as you begin the descending trek. > ''')
