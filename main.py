@@ -49,9 +49,9 @@ class Player(object):
                     enemy.stunned = 1
                     damage = random.randint(1, 3)
                     enemy.hp -= damage
-                    raw_input('\n%s punches %s in the stomach for %d damage!'
-                              ' %s doubles over in pain.'
-                              % (self.name, enemy.name, damage, enemy.name))
+                    raw_input('''
+%s punches %s in the stomach for %d damage!
+%s doubles over in pain. > ''' % (self.name, enemy.name, damage, enemy.name))
                 break
 
     def melee_attack(self, enemy):
