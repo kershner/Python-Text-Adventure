@@ -156,7 +156,6 @@ There are three doors at the end of three tunnels ahead of you. One to the
                     raw_input('The door is locked!')
             elif choice == 'east' or choice == 'south':
                 shop.enter()
-                main.random_room.remove(shop.enter)
             else:
                 print "\nChoose a door to continue."
                 continue
@@ -527,8 +526,8 @@ black opening. > ''')
             raw_input('\nYou light a torch --')
             i = main.random.choice(main.random_monsters)
             raw_input('''
-The sudden flame illuminates %s just ahead!  The creature snarls and rushes
-toward you! > ''' % i.name)
+The sudden flame illuminates %s just ahead!  The creature snarls and
+rushes toward you! > ''' % i.name)
             main.combat(main.player, i)
             print '\n%s\'s corpse falls at the foot of the mine\'s door.' % i.name
             agency()
@@ -594,7 +593,7 @@ Quietly [approach] the figure. | [Call] out to the figure. > ''').lower()
 You see the silhouette of a figure standing at a pedestal on the island.  The
 figure's back is turned to you and the being is clearly preoccupied with some
 complex task involving its hands. > ''')
-            choice = raw_input('''
+        choice = raw_input('''
 Quietly [approach] the figure. | [Call] out to the figure. > ''').lower()
         if choice == 'approach':
             raw_input('''
@@ -608,6 +607,7 @@ figure is entirely shrouded in dark robes save for a ghostly white mouth
 visible inside its deep cowl.  As the mouth begins to speak, small pebbles
 nearby raise off the ground and you feel a curious tingling throughout your
 body... > ''')
+            main.sorceror.boss_battle(main.player)
         elif choice == 'call':
             choice1 = raw_input('''
 [Who] are you?!
@@ -626,7 +626,7 @@ nearby raise off the ground and you feel a curious tingling throughout your
 body... > ''')
                 main.sorceror.boss_battle(main.player)
             else:
-                print '\nChoose an action to continue.'
+                print '\nChoose an action to continue'
         else:
             print '\nChoose an action to continue.'
 
@@ -676,7 +676,7 @@ to yerself while I go fetch yer gear from the store room." > ''' % main.player.n
             raw_input('''
 Fenton returns with a well crafted dagger, a tough looking leather jerkin, and
 a healing potion. > ''')
-            main.player.mp = 6
+            main.player.mp = 0
             main.player.equipment.append(main.dagger)
             main.player.equipment.append(main.leather)
             main.player.items.append(main.healing_potion)

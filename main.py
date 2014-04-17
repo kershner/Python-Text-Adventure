@@ -180,28 +180,31 @@ class Player(object):
                         print i.name
                 print '\nGold: %d' % player.gold
             choice = raw_input('\n[Equip] | [Use] | [Inspect] | [Back] > ').lower()
-            if choice == 'equip':
-                self.change_equipment()
-                if player.back:
-                    continue
-                else:
-                    break
-            elif choice == 'use':
-                if player.combat:
-                    player.used_item = True
-                    break
-                elif not player.combat:
-                    self.use_item(spider)
-            elif choice == 'inspect':
-                self.inspect()
-                continue
-            elif choice == 'back':
-                player.back = True
-                break
-            else:
-                player.used_item = False
-                break
 
+            try:
+                if choice == 'equip':
+                    self.change_equipment()
+                    if player.back:
+                        continue
+                    else:
+                        break
+                elif choice == 'use':
+                    if player.combat:
+                        player.used_item = True
+                        break
+                    elif not player.combat:
+                        self.use_item(spider)
+                elif choice == 'inspect':
+                    self.inspect()
+                    continue
+                elif choice == 'back':
+                    player.back = True
+                    break
+                else:
+                    player.used_item = False
+                    break
+            except ValueError:
+                continue
     def change_equipment(self):
         player.back = False
         while True:
@@ -276,8 +279,7 @@ class Player(object):
                             enemy.hp -= itemchoice.damage
                             del self.items[intchoice]
                             player.used_item = True
-            except IndexError:
-                print '\nYou are not currently carrying that item!'
+            except ValueError:
                 continue
 
     def inspect(self):
@@ -809,8 +811,8 @@ sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball',
 
 # Lists of functions, objects for randomization
 random_monsters = [orc, goblin, kobold, spider]
-random_room = [rooms.room1.enter, rooms.shop.enter, rooms.room2.enter,
-               rooms.room3.enter, rooms.room4.enter]
+random_room = [rooms.room1.enter, rooms.room2.enter, rooms.room3.enter,
+               rooms.room4.enter]
 items = [healing_potion, mana_potion, frost_potion]
 weapons = [bastard_sword, staff, dagger, spear, mace, two_hander, poleaxe]
 armor = [leather, plate, robes]
