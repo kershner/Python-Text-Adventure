@@ -2,7 +2,6 @@ import random
 import rooms
 
 
-# Creating class for all the 'actors' in the game
 class Player(object):
     def __init__(self, name, player_class, max_hp, hp, strength, ac, sta,
                  max_mana, mana, equipment, items, gold, xp, back, used_item,
@@ -30,6 +29,7 @@ class Player(object):
     level = 1
 
     def attack(self, enemy):
+        """Attack method for fighter class."""
         player.back = False
         while True:
             print '\n[Weapon] | [Gut] punch | [Back]'
@@ -55,6 +55,7 @@ class Player(object):
                 break
 
     def melee_attack(self, enemy):
+        """Basic melee attack for all classes."""
         attack = 2 + self.strength + int(self.sta * random.random())
         damage = int(random.random() * (self.sta / 2)) + self.strength
         if attack >= enemy.ac:
@@ -65,6 +66,7 @@ class Player(object):
             print '\n%s missed!' % self.name
 
     def thievery(self, enemy):
+        """Handles additional options for thieves in combat."""
         player.back = False
         while True:
             choice = raw_input('\n[Steal] | [Backstab] | [Back] > ').lower()
@@ -118,6 +120,7 @@ class Player(object):
                         break
 
     def spells(self, enemy):
+        """Spells menu that only mages have access to."""
         player.back = False
         while True:
             print '\n[Heal | 4 MP] | [Fireball | 7 MP] | [Stun | 10 MP]' \
@@ -162,6 +165,9 @@ class Player(object):
                     break
 
     def inv(self):
+        """First layer of inventory function.  Displays list of items
+           currently in inventory and actions that can be performed with
+           them."""
         player.back = False
         while True:
             if len(self.equipment) < 1 and len(self.items) < 1 and self.gold < 1:
@@ -200,7 +206,9 @@ class Player(object):
                 break
             else:
                 continue
+
     def change_equipment(self):
+        """Handles the [Equip] option from first inventory menu."""
         player.back = False
         while True:
             print '\nEquipment:'
@@ -230,6 +238,7 @@ class Player(object):
                 continue
 
     def use_item(self, enemy):
+        """Handles [Use] from first inventory menu."""
         player.used_item = False
         player.back = False
         while not player.used_item:
@@ -281,6 +290,8 @@ class Player(object):
                 continue
 
     def inspect(self):
+        """Handles [Inspect] option from inventory menu.  Displays an item's
+           stats given its index in player.equipment."""
         player.back = False
         print('\nEquipment:')
         for i in self.equipment:
@@ -303,6 +314,7 @@ class Player(object):
                 print '\nChoose an item by its number'
 
     def status(self):
+        """Displays current player status."""
         player.back = False
         while True:
             print '\n////////////////////////////'
@@ -333,6 +345,8 @@ class Player(object):
                 break
 
     def flee(self):
+        """Handles the [Flee] option from the combat menu.  Randomly
+           determines if the monster blocks your flight attempt."""
         while True:
             flee_chance = random.randint(1, 10)
             if flee_chance > 4:
@@ -357,6 +371,7 @@ class Player(object):
         raw_input('\n%s has gained a level!' % player.name)
 
     def rest(self):
+        """Handles [Rest] option from main menu."""
         confirm = raw_input('Are you sure you would like to rest? > ').lower()
         if confirm == 'no':
             player.back = True
@@ -369,7 +384,7 @@ Moments after you lay down, you begin to doze off. > ''')
             if random.randint(0, 10) > 6:
                 monster_during_rest()
             else:
-                raw_input('\nYou awaken after %d hours feeling refreshed'
+                raw_input('\nYou awaken after %d hours feeling refreshed.'
                           % hours)
                 if player.player_class == 'mage':
                     if player.hp == player.max_hp and \
@@ -414,6 +429,7 @@ class Monster(object):
         self.stunned = stunned
 
     def melee_attack(self, enemy):
+        """Basic melee attack for monsters."""
         attack = 2 + self.strength + int(self.sta * random.random())
         damage = int(random.random() * (self.sta / 2)) + self.strength
         if attack >= enemy.ac:
@@ -433,6 +449,7 @@ class Boss(object):
         self.stunned = stunned
 
     def attack(self, player):
+        """The boss's basic attack."""
         damage = random.randint(5, 7)
         if random.randint(1, 10) > 4:
             player.hp -= damage
@@ -442,6 +459,7 @@ class Boss(object):
             raw_input('\n%s\'s spell fizzles!' % self.name)
 
     def special_attack(self, player):
+        """Special attack that the boss uses every three turns."""
         damage = random.randint(8, 15)
         if random.randint(1, 10) > 4:
             player.hp -= damage
@@ -451,6 +469,8 @@ chamber.  Bits of debris and intense winds tear at your body for %d damage. '''
                       % (self.name, damage))
 
     def transform(self):
+        """Boss transforms once first form is reduced to 0 HP.  He gains
+           HP/AC and a new attack."""
         raw_input('''
 The figure suddenly springs into the air and hovers a short ways off the
 ground. Spears of light begin to radiate from its body, eroding the
@@ -463,6 +483,7 @@ huge talons each the size of a long spear. > ''')
         self.ac = 10
 
     def transform_attack(self, player):
+        """New basic attack for the boss once he's transformed."""
         damage = random.randint(8, 12)
         if random.randint(1, 10) > 4:
             player.hp -= damage
@@ -473,6 +494,8 @@ huge talons each the size of a long spear. > ''')
             raw_input('\n%s misses with their monstrous claws!' % self.name)
 
     def boss_battle(self, player):
+        """Separate method to handle combat with the boss since a few
+           special cases are required."""
         turn = 1
         player.combat = True
         player.special = 2
@@ -482,9 +505,9 @@ huge talons each the size of a long spear. > ''')
                 self.transform()
             elif self.hp < 1:
                 raw_input('''
-%s is slain and the evil corruption plaguing the land has been
+The demon is slain and the evil corruption plaguing the land has been
 destroyed.
-\n\n\n\nGame Over''' % self.name)
+\n\n\n\nGame Over''')
                 quit()
             if self.stunned > 0:
                 raw_input('\n%s is stunned!' % self.name)
@@ -504,6 +527,7 @@ destroyed.
             turn += 1
 
 
+# Classes for all the items in the game follow.
 class Weapon(object):
     def __init__(self, name, attack, ac_penalty, price):
         self.name = name
@@ -574,8 +598,8 @@ class Item(object):
         self.price = price
 
 
-# Function to handle combat
 def combat(player, enemy):
+    """Handles the logic flow of combat."""
     enemy.hp = enemy.max_hp
     player.combat = True
     player.special = 2
@@ -598,6 +622,8 @@ def combat(player, enemy):
 
 
 def combat_choice(player, enemy):
+    """This is the menu that is brought up for the player at the start of
+       each combat round."""
     print '\n%s\'s HP: %d' % (player.name, player.hp)
     print '%s\'s MP: %d' % (player.name, player.mana)
     while True:
@@ -663,8 +689,8 @@ def combat_choice(player, enemy):
             break
 
 
-# Victory conditions!
 def victory(player, enemy):
+    """Victory conditions."""
     player.combat = False
     xp_gained = enemy.xp
     hp_regained = random.randint(1, 4)
@@ -694,9 +720,9 @@ def victory(player, enemy):
         player.levelup()
 
 
-# Randomly selects the next room from the list
 def room_selector():
-    # When down to the final element of the list, go to final room
+    """Randomly selects the next room from the random_room list.
+       When down to the final element of the list, go to final room."""
     if len(random_room) == 0:
         rooms.final_room.enter()
     else:
@@ -705,16 +731,16 @@ def room_selector():
         i()
 
 
-# Randomly determine if a monster is present in a room or not
 def monster_chance():
+    """Randomly determine if a monster is present in a room or not."""
     if random.randint(0, 10) > 3:
         return True
     else:
         return False
 
 
-# Randomly selects a monster from the list, starts combat
 def random_monster():
+    """Randomly selects a monster from the list, starts combat."""
     i = random.choice(random_monsters)
     if len(random_monsters) == 0:
         pass
@@ -742,6 +768,7 @@ def random_monster():
 
 
 def monster_during_rest():
+    """Determines if a monster will attack while the player rests."""
     i = random.choice(random_monsters)
     raw_input('''
 You abrubtly wake from your slumber to the sound of %s rushing
@@ -750,6 +777,7 @@ toward you! ''' % i.name)
 
 
 def loot_chance():
+    """Chance that the player will find loot."""
     chance = random.randint(1, 100)
     if chance > 55:
         return True
@@ -758,6 +786,8 @@ def loot_chance():
 
 
 def loot():
+    """Determines type of loot, appends it to player.equipment
+       or player.items."""
     loot_type = random.randint(1, 100)
     if 36 < loot_type < 75:
         i = random.choice(items)
@@ -772,7 +802,7 @@ def loot():
         player.equipment.append(i)
         raw_input('\nYou find a %s!' % i.name)
 
-# Weapons - attributes are name, attack, and AC penalty
+# Weapons - attributes are name, attack, AC penalty, price.
 bastard_sword = Weapon('bastard sword', 4, 1, 20)
 staff = Weapon('gnarled staff', 2, 0, 15)
 dagger = Weapon('dagger', 2, 0, 8)
@@ -781,35 +811,38 @@ mace = Weapon('mace', 3, 0, 12)
 two_hander = Weapon('two handed sword', 5, 2, 25)
 poleaxe = Weapon('poleaxe', 6, 3, 30)
 
-# Magic Items
+# Magic Items - attributes are name, attack, AC penalty, price.
 magic_axe = MagicWeapon('Glowing Two-Handed Axe', 6, 2, 35)
 magic_dagger = MagicWeapon('Poisoned Dagger', 3, 0, 30)
 
-# Armor - attributes are name and defense
+# Armor - attributes are name, defense, price
 leather = Armor('leather jerkin', 2, 10)
 plate = Armor('plated mail', 4, 15)
 robes = Armor('cloth robe', 1, 8)
 
-# Items - attributes are name, plus_hp, plus_mana, and damage
+# Items - attributes are name, plus_hp, plus_mana, damage, price
 healing_potion = Item('healing potion', 10, 0, 0, 5)
 mana_potion = Item('mana potion', 0, 10, 0, 5)
 frost_potion = Item('frost potion', 0, 0, 10, 5)
 
-# Monsters - attributes are: Name, max HP, HP, strength, AC, sta, XP, weapon
-orc = Monster('an orc', 21, 15, 2, 3, 7, 5, 'mace', 0)
-goblin = Monster('a goblin', 20, 15, 2, 8, 8, 4, 'dagger', 0)
-kobold = Monster('a kobold', 19, 15, 3, 7, 8, 5, 'flail', 0)
+# Monsters - attributes are: Name, max HP, HP, strength, AC, sta, XP,
+# weapon, stunned.
+orc = Monster('an orc', 21, 21, 2, 3, 7, 5, 'mace', 0)
+goblin = Monster('a goblin', 20, 20, 2, 8, 8, 4, 'dagger', 0)
+kobold = Monster('a kobold', 19, 19, 3, 7, 8, 5, 'flail', 0)
 spider = Monster('a giant tarantula', 21, 21, 4, 6, 7, 6, 'fangs', 0)
+
 # Player - attributes are: Name, class, Max HP, HP, STR, AC, STA, Max Mana,
 # MANA equipment, items, gold, xp, back, used_item, weapon, armor, combat,
-# special
+# special, room.
 player = Player('', '', 21, 21, 2, 6, 5, 0, 0, [], [], 15, 0, False,
                 False, '', '', False, 0, None)
-#Boss - attributes are: Name, HP, AC, spells
+
+#Boss - attributes are: Name, HP, AC, spells, stunned.
 sorceror = Boss('a mysterious figure', 20, 8, ['lightning strike', 'fireball',
                                                'meteor', 'ice strike'], 0)
 
-# Lists of functions, objects for randomization
+# Lists of functions, objects for randomization/use in selector functions.
 random_monsters = [orc, goblin, kobold, spider]
 random_room = [rooms.room1.enter, rooms.room2.enter, rooms.room3.enter,
                rooms.room4.enter]

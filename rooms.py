@@ -2,6 +2,8 @@ import main
 
 
 def agency():
+    """Displays non-combat menu of choices for the player when they enter
+       a room."""
     while True:
         if main.player.player_class == 'mage':
             if main.player.room == shop:
@@ -47,10 +49,15 @@ def agency():
             main.player.room.proceed()
 
 
+# All the room objects follow. Room.enter() is called when a room
+# is randomly selected by room_selector() from the random_room list
 class Room1(object):
     possible_loot = True
 
     def enter(self):
+        """The line  below changes the 'room' attribute of main.player,
+           so it can be used in the agency() function to call the right
+           [Search] and [Proceed] functions. """
         main.player.room = room1
         if main.monster_chance():
             main.random_monster()
@@ -240,7 +247,7 @@ be severed and I will slowly wither into nonexistence.  The evil lurking in
 this region will gradually increase in ferocity and your civilization will be
 overrun.  However, the higher order of the universe is not concerned with such
 trivial matters, so your choice is ultimately meaningless."
-\nI leave you now." > ''')
+\n"I leave you now." > ''')
                         raw_input('''
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > ''')
@@ -360,6 +367,7 @@ Sneezlebrixx's shop looks fairly well maintained, however, and many of the
 items on display look to be in excellent condition. > ''')
 
     def shop(self):
+        """Displays shop menu and options."""
         print '\n"What would you like to see, human?"'
         while True:
             print '\nGold: %d' % main.player.gold
@@ -552,6 +560,7 @@ enter the mine. > ''')
         main.room_selector()
 
 
+# Final room - displays some text and eventually triggers the boss battle
 class FinalRoom(object):
     searched = 0
 
@@ -630,8 +639,9 @@ body... > ''')
         else:
             print '\nChoose an action to continue.'
 
-# Function to enter the first room, begin function chain
+
 def start():
+    """Called when rooms.py is executed, begins the game loop."""
     main.player.name = raw_input('''
 As you enter the sweltering smithy a gruff looking man behind the counter
 keeps his eyes fixed on the parchment sprawled in front of him.  He bellows in
@@ -710,6 +720,7 @@ Best o' luck to ye!"'''
             print '\nChoose a class to continue.'
             continue
 
+# Instantiating the room classes from above so they can be used in main.py
 mine_entrance = MineEntrance()
 room1 = Room1()
 room2 = Room2()
