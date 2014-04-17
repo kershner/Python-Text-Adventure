@@ -75,7 +75,7 @@ class Player(object):
                 if random.randint(0, 10) > 2:
                     loot_type = random.randint(1, 100)
                     if loot_type > 65:
-                        gold = random.randint(0, 15)
+                        gold = random.randint(1, 15)
                         player.gold += gold
                         raw_input('\nYou successfully steal %d gold!' % gold)
                         break
@@ -366,7 +366,7 @@ class Player(object):
             raw_input('''
 You spread the threadbare bedroll from your backpack on the ground before you.
 Moments after you lay down, you begin to doze off. > ''')
-            if monster_chance():
+            if random.randint(0, 10) > 6:
                 monster_during_rest()
             else:
                 raw_input('\nYou awaken after %d hours feeling refreshed'
@@ -482,8 +482,10 @@ huge talons each the size of a long spear. > ''')
                 self.transform()
             elif self.hp < 1:
                 raw_input('''
-%s is slain and the evil corruption plaguing the land has been destroyed.
+%s is slain and the evil corruption plaguing the land has been
+destroyed.
 \n\n\n\nGame Over''' % self.name)
+                quit()
             if self.stunned > 0:
                 raw_input('\n%s is stunned!' % self.name)
                 self.stunned -= 1
@@ -717,8 +719,8 @@ def random_monster():
     if len(random_monsters) == 0:
         pass
     elif player.player_class == 'thief':
-        print '\nYou open the door quietly and can see %s patrolling the next ' \
-              'room.' % i.name
+        print '\nYou open the door quietly and can see %s ' \
+              'patrolling the next room.' % i.name
         choice = raw_input('Do you attempt to sneak past the creature? > ').lower()
         if choice == 'yes':
             stealth_chance = random.randint(1, 100)
@@ -742,8 +744,8 @@ def random_monster():
 def monster_during_rest():
     i = random.choice(random_monsters)
     raw_input('''
-You abrubtly wake from your slumber to the sound of %s rushing toward you!
-''' % i.name)
+You abrubtly wake from your slumber to the sound of %s rushing
+toward you! ''' % i.name)
     combat(player, i)
 
 
