@@ -666,8 +666,9 @@ ye geared and on ye way."'''
             raw_input('''
 "We're gonna get along great, %s!  Let me just grab ye some suitable arms
 and armor from the store room." > ''' % main.player.name)
-            raw_input('\nFenton returns with a well crafted bastard sword, set'
-                      ' of full plate, and a healing potion. > ')
+            raw_input('''
+Fenton returns with a well crafted bastard sword, set of full plate, and
+a healing potion. > ''')
             main.player.mp = 0
             main.player.equipment.append(main.bastard_sword)
             main.player.equipment.append(main.plate)
@@ -720,7 +721,8 @@ Best o' luck to ye!"'''
             print '\nChoose a class to continue.'
             continue
 
-# Title screen with sick ASCII Art
+
+#  Title screen with sick ASCII Art
 def title():
     try:
         with open('title.txt', 'r') as title:

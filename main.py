@@ -46,7 +46,7 @@ class Player(object):
                     continue
                 else:
                     player.special -= 2
-                    enemy.stunned = 2
+                    enemy.stunned = 1
                     damage = random.randint(1, 3)
                     enemy.hp -= damage
                     raw_input('\n%s punches %s in the stomach for %d damage!'
