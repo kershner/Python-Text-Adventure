@@ -270,18 +270,18 @@ As the words leave your mouth the ancient tree before you vibrates softly.
 Two large yellow eyes materialize in the bark and fix themselves upon you. > ''')
                 raw_input('''
 "You are near the end of that particular quest, traveler. I am known to your
-kind as a benevolent spirit.  My influence has been usurped by a nefarious
-sorcerer seeking to enter the upper planes by way of my own deep connection
-with them.  It is this corruption that is responsible for the evil recently
-pouring forth from this mine. Find the sorcerer deeper in the mines and
-destroy him." > ''')
+kind as...a benevolent spirit, of a sort.  My influence has been usurped by a
+nefarious sorcerer seeking to enter the upper planes by way of my own deep
+connection with them.  It is this corruption that is responsible for the evil
+recently pouring forth from this mine. Find the sorcerer deeper in the mines
+and destroy him." > ''')
                 raw_input('''
 "If you refuse to help or fail in this task my connection with the planes will
 be severed and I will slowly wither into nonexistence.  The evil lurking in
 this region will gradually increase in ferocity and your civilization will be
 overrun.  However, the higher order of the universe is not concerned with such
 trivial matters so your choice is ultimately meaningless."
-"\nI will leave you now." > ''')
+\n"I will leave you now." > ''')
                 raw_input('''
 The large yellow eyes disappear and the ancient tree gradually ceases its
 vibration. The room is returned to stillness once more. > ''')

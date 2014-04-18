@@ -377,7 +377,7 @@ class Player(object):
             player.back = True
         else:
             hours = random.randint(2, 6)
-            mp_regained = hours
+            mp_regained = hours * 3
             raw_input('''
 You spread the threadbare bedroll from your backpack on the ground before you.
 Moments after you lay down, you begin to doze off. > ''')
@@ -464,9 +464,9 @@ class Boss(object):
         if random.randint(1, 10) > 4:
             player.hp -= damage
             raw_input('''
-%s's eyes glaze over as an unnatural maelstrom materializes within the
-chamber.  Bits of debris and intense winds tear at your body for %d damage. '''
-                      % (self.name, damage))
+%s's eyes glaze over as an unnatural maelstrom materializes within
+the chamber.  Bits of debris and intense winds tear at %s\'s body
+for %d damage. ''' % (self.name, player.name, damage))
 
     def transform(self):
         """Boss transforms once first form is reduced to 0 HP.  He gains
