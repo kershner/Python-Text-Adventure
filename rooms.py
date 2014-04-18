@@ -534,8 +534,8 @@ black opening. > ''')
             raw_input('\nYou light a torch --')
             i = main.random.choice(main.random_monsters)
             raw_input('''
-The sudden flame illuminates %s just ahead!  The creature snarls and
-rushes toward you! > ''' % i.name)
+The sudden flame illuminates %s just ahead!
+The creature snarls and rushes toward you! > ''' % i.name)
             main.combat(main.player, i)
             print '\n%s\'s corpse falls at the foot of the mine\'s door.' % i.name
             agency()

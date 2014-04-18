@@ -1,5 +1,9 @@
+import os
 import random
 import rooms
+
+# Specifies the size of the windows command prompt console
+os.system("mode con cols=80 lines=60")
 
 
 class Player(object):
@@ -506,8 +510,8 @@ huge talons each the size of a long spear. > ''')
             elif self.hp < 1:
                 raw_input('''
 The demon is slain and the evil corruption plaguing the land has been
-destroyed.
-\n\n\n\nGame Over''')
+destroyed.''')
+                raw_input('\n\n\n\nGame Over')
                 quit()
             if self.stunned > 0:
                 raw_input('\n%s is stunned!' % self.name)
